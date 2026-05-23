@@ -1,7 +1,10 @@
 #ifndef PERIPHERALS_H
 #define PERIPHERALS_H
 
+#include <zephyr/kernel.h>
 #include <nrfx_timer.h>
+
+#define PACKED_BUFFER_SIZE 240
 
 #define SAADC_SAMPLE_INTERVAL_US 1000
 #define SAADC_BUFFER_SIZE 8
@@ -19,9 +22,18 @@ typedef enum {
     // dees kunnen we extenden om wat meer error types te hebben en dan kunnen
     // we elke keer |= om die bij te houden. da werkt met Segger RTT dan kunnen
     // we op de SWD ook soort van debuggen.
+
+    // kunnen we niet LOG_ERR() gebruiken voor debugging? want dan krijgen we ook een berichtje erbij
 } system_status_t;
 
 extern system_status_t status_flag;
+
+struct neural_packet {
+    uint32_t sample_index;     
+    uint8_t packed_data[PACKED_BUFFER_SIZE];
+} __packed;
+
+extern struct k_msgq ble_data_queue;
 
 void configure_timer(void);
 void configure_saadc(void);
