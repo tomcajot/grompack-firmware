@@ -1,10 +1,13 @@
 #include <nrfx_saadc.h>
 #include <zephyr/kernel.h>
-#include <zephyr/logging/log.h>
 
 #include "peripherals.h"
 
-LOG_MODULE_REGISTER(acd_logger, LOG_LEVEL_DBG);
+LOG_MODULE_DECLARE(grompack_logger, LOG_LEVEL_DBG);
+
+static struct neural_packet current_tx_packet;
+static uint16_t byte_fill_count = 0;
+static uint32_t global_sample_counter = 0;
 
 static nrfx_saadc_channel_t channels[2] = {
     NRFX_SAADC_DEFAULT_CHANNEL_SE(SAADC_INPUT_PIN_0, 0),
@@ -35,12 +38,36 @@ static void saadc_event_handler(nrfx_saadc_evt_t const* p_event) {
             }
             break;
 
-        case NRFX_SAADC_EVT_DONE:
-            int16_t sample = ((int16_t*)(p_event->data.done.p_buffer))[0];
-            LOG_INF("Sample: %d", sample);
-            // code to send the sample or smth. gets only executed once a buffer
-            // is full.
+        case NRFX_SAADC_EVT_DONE: {
+            int16_t* raw_data = (int16_t*)(p_event->data.done.p_buffer);
+
+            // LOG_INF("Sample[0]: %d", (int)raw_data[0]);
+
+            for (int i = 0; i < (SAADC_BUFFER_SIZE / 2); i++) {
+                uint16_t sample1 = (uint16_t)raw_data[i * 2] & 0x0FFF;
+                uint16_t sample2 = (uint16_t)raw_data[(i * 2) + 1] & 0x0FFF;
+
+                current_tx_packet.packed_data[byte_fill_count++] =
+                    sample1 & 0xFF;
+                current_tx_packet.packed_data[byte_fill_count++] =
+                    ((sample1 >> 8) & 0x0F) | ((sample2 << 4) & 0xF0);
+                current_tx_packet.packed_data[byte_fill_count++] =
+                    (sample2 >> 4) & 0xFF;
+
+                if (byte_fill_count >= PACKED_BUFFER_SIZE) {
+                    current_tx_packet.sample_index = global_sample_counter;
+                    err = k_msgq_put(&ble_data_queue, &current_tx_packet,
+                                     K_NO_WAIT);
+                    if (err != 0) {
+                        status_flag = ERROR;
+                        return;
+                    }
+                    byte_fill_count = 0;
+                    global_sample_counter += (SAADC_BUFFER_SIZE / 2);
+                }
+            }
             break;
+        } /* NRFX_SAADC_EVT_DONE */
         default:
             status_flag = ERROR;
             break;

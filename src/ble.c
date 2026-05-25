@@ -1,10 +1,13 @@
-#include "ble.h"
-#include <zephyr/kernel.h>
 #include <zephyr/bluetooth/bluetooth.h>
 #include <zephyr/bluetooth/services/nus.h>
+#include <zephyr/kernel.h>
 
-#define DEVICE_NAME     CONFIG_BT_DEVICE_NAME
-#define DEVICE_NAME_LEN     (sizeof(DEVICE_NAME) - 1)
+#include "peripherals.h"
+
+LOG_MODULE_DECLARE(grompack_logger, LOG_LEVEL_DBG);
+
+#define DEVICE_NAME CONFIG_BT_DEVICE_NAME
+#define DEVICE_NAME_LEN (sizeof(DEVICE_NAME) - 1)
 
 bool is_laptop_subscribed = false;
 
@@ -17,19 +20,18 @@ static const struct bt_data sd[] = {
     BT_DATA_BYTES(BT_DATA_UUID128_ALL, BT_UUID_NUS_SRV_VAL),
 };
 
-static void notif_enabled(bool enabled, void *ctx)
-{
+static void notif_enabled(bool enabled, void* ctx) {
     ARG_UNUSED(ctx);
-    printk("Laptop Subscription: %s\n", (enabled ? "Enabled" : "Disabled"));
-    
+    LOG_INF("Laptop Subscription: %s\n", (enabled ? "Enabled" : "Disabled"));
+
     is_laptop_subscribed = enabled;
 }
 
-static void received(struct bt_conn *conn, const void *data, uint16_t len, void *ctx)
-{
+static void received(struct bt_conn* conn, const void* data, uint16_t len,
+                     void* ctx) {
     ARG_UNUSED(conn);
     ARG_UNUSED(ctx);
-    printk("Command Received from Laptop: %.*s\n", len, (char *)data);
+    LOG_INF("Command Received from Laptop: %.*s\n", len, (char*)data);
 }
 
 struct bt_nus_cb nus_listener = {
@@ -37,26 +39,30 @@ struct bt_nus_cb nus_listener = {
     .received = received,
 };
 
-void initialize_bluetooth(void) {
+void configure_ble(void) {
     int err;
 
     err = bt_enable(NULL);
     if (err) {
-        printk("BLE init failed (err %d)\n", err);
+        LOG_INF("BLE init failed (err %d)\n", err);
+        status_flag = ERROR;
         return;
     }
 
     err = bt_nus_cb_register(&nus_listener, NULL);
     if (err) {
-        printk("NUS callbacks failed to register (err %d)\n", err);
+        LOG_INF("NUS callbacks failed to register (err %d)\n", err);
+        status_flag = ERROR;
         return;
     }
 
-    err = bt_le_adv_start(BT_LE_ADV_CONN, ad, ARRAY_SIZE(ad), sd, ARRAY_SIZE(sd));
+    err = bt_le_adv_start(BT_LE_ADV_CONN_FAST_1, ad, ARRAY_SIZE(ad), sd,
+                          ARRAY_SIZE(sd));
     if (err) {
-        printk("Advertising failed to start (err %d)\n", err);
+        LOG_INF("Advertising failed to start (err %d)\n", err);
+        status_flag = ERROR;
         return;
     }
 
-    printk("Bluetooth initialized and advertising successfully.\n");
+    LOG_INF("Bluetooth initialized and advertising successfully.\n");
 }
