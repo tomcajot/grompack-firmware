@@ -3,7 +3,7 @@
 
 #include "peripherals.h"
 
-LOG_MODULE_DECLARE(grompack_logger, LOG_LEVEL_DBG);
+// LOG_MODULE_DECLARE(grompack_logger, LOG_LEVEL_DBG);
 
 static struct neural_packet current_tx_packet;
 static uint16_t byte_fill_count = 0;
@@ -41,7 +41,7 @@ static void saadc_event_handler(nrfx_saadc_evt_t const* p_event) {
         case NRFX_SAADC_EVT_DONE: {
             int16_t* raw_data = (int16_t*)(p_event->data.done.p_buffer);
 
-            LOG_INF("Sample: %d", (int)raw_data[0]);
+            // LOG_INF("Sample: %d", (int)raw_data[0]);
 
             for (int i = 0; i < (SAADC_BUFFER_SIZE / 2); i++) {
                 uint16_t sample1 = (uint16_t)raw_data[i * 2] & 0x0FFF;

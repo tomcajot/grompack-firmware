@@ -1,0 +1,35 @@
+board:
+  name: gromboard-minewsemi
+  full_name: gromboard-minewsemi
+  vendor: Team_Kakkerlak
+  socs:
+    - name: nrf54l15
+
+runners:
+  run_once:
+    "--recover":
+      - runners:
+          - nrfjprog
+          - nrfutil
+        run: first
+        groups:
+          - boards:
+              - gromboard-minewsemi/nrf54l15/cpuapp
+    "--erase":
+      - runners:
+          - nrfjprog
+          - jlink
+          - nrfutil
+        run: first
+        groups:
+          - boards:
+              - gromboard-minewsemi/nrf54l15/cpuapp
+    "--reset":
+      - runners:
+          - nrfjprog
+          - jlink
+          - nrfutil
+        run: last
+        groups:
+          - boards:
+              - gromboard-minewsemi/nrf54l15/cpuapp

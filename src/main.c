@@ -2,7 +2,7 @@
 
 #include "peripherals.h"
 
-LOG_MODULE_REGISTER(grompack_logger, LOG_LEVEL_DBG);
+// LOG_MODULE_REGISTER(grompack_logger, LOG_LEVEL_DBG);
 
 K_MSGQ_DEFINE(ble_data_queue, sizeof(struct neural_packet), 10, 4);
 
@@ -25,10 +25,10 @@ int main(void) {
                     bt_nus_send(NULL, (uint8_t*)&tx_packet, sizeof(tx_packet));
 
                 if (err && err != -EAGAIN && err != -ENOTCONN) {
-                    LOG_INF("Transmission error: %d\n", err);
+                    // LOG_INF("Transmission error: %d\n", err);
                 }
             } else {
-                LOG_INF("Laptop not subscribed, skipping transmission.\n");
+                // LOG_INF("Laptop not subscribed, skipping transmission.\n");
             }
         }
     }

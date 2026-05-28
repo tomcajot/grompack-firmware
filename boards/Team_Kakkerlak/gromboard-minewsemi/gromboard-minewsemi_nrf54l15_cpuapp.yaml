@@ -1,0 +1,10 @@
+identifier: gromboard-minewsemi/nrf54l15/cpuapp
+name: Board Files For The Grompack - Minewsemi MCU Version
+vendor: Team_Kakkerlak
+arch: arm
+toolchain:
+  - zephyr
+sysbuild: true
+ram: 188
+flash: 664
+supported: []

@@ -4,7 +4,7 @@
 #include <nrfx_timer.h>
 #include <zephyr/bluetooth/services/nus.h>
 #include <zephyr/kernel.h>
-#include <zephyr/logging/log.h>
+// #include <zephyr/logging/log.h>
 
 #define PACKED_BUFFER_SIZE 240
 
