@@ -1,8 +1,9 @@
 #include <zephyr/kernel.h>
+#include <zephyr/logging/log.h>
 
 #include "peripherals.h"
 
-// LOG_MODULE_REGISTER(grompack_logger, LOG_LEVEL_DBG);
+LOG_MODULE_REGISTER(grompack_logger, LOG_LEVEL_DBG);
 
 K_MSGQ_DEFINE(ble_data_queue, sizeof(struct neural_packet), 10, 4);
 

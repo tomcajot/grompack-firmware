@@ -1,0 +1,13 @@
+# Target labels
+ adc_test
+# Source files and their labels
+/Users/tomcajot/Desktop/bap/grompack-firmware/tests/adc_test/build/_sysbuild/sysbuild/images/CMakeFiles/adc_test
+/Users/tomcajot/Desktop/bap/grompack-firmware/tests/adc_test/build/_sysbuild/sysbuild/images/CMakeFiles/adc_test.rule
+/Users/tomcajot/Desktop/bap/grompack-firmware/tests/adc_test/build/_sysbuild/sysbuild/images/CMakeFiles/adc_test-complete.rule
+/Users/tomcajot/Desktop/bap/grompack-firmware/tests/adc_test/build/_sysbuild/sysbuild/images/adc_test-prefix/src/adc_test-stamp/adc_test-build.rule
+/Users/tomcajot/Desktop/bap/grompack-firmware/tests/adc_test/build/_sysbuild/sysbuild/images/adc_test-prefix/src/adc_test-stamp/adc_test-configure.rule
+/Users/tomcajot/Desktop/bap/grompack-firmware/tests/adc_test/build/_sysbuild/sysbuild/images/adc_test-prefix/src/adc_test-stamp/adc_test-download.rule
+/Users/tomcajot/Desktop/bap/grompack-firmware/tests/adc_test/build/_sysbuild/sysbuild/images/adc_test-prefix/src/adc_test-stamp/adc_test-install.rule
+/Users/tomcajot/Desktop/bap/grompack-firmware/tests/adc_test/build/_sysbuild/sysbuild/images/adc_test-prefix/src/adc_test-stamp/adc_test-mkdir.rule
+/Users/tomcajot/Desktop/bap/grompack-firmware/tests/adc_test/build/_sysbuild/sysbuild/images/adc_test-prefix/src/adc_test-stamp/adc_test-patch.rule
+/Users/tomcajot/Desktop/bap/grompack-firmware/tests/adc_test/build/_sysbuild/sysbuild/images/adc_test-prefix/src/adc_test-stamp/adc_test-update.rule

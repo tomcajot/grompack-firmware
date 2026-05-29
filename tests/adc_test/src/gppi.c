@@ -2,8 +2,11 @@
 #include <nrfx_saadc.h>
 #include <nrfx_timer.h>
 #include <zephyr/kernel.h>
+#include <zephyr/logging/log.h>
 
 #include "peripherals.h"
+
+LOG_MODULE_DECLARE(adc_logger, LOG_LEVEL_DBG);
 
 void configure_ppi(void) {
     int err;

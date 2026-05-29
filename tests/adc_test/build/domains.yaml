@@ -1,0 +1,7 @@
+default: adc_test
+build_dir: /Users/tomcajot/Desktop/bap/grompack-firmware/tests/adc_test/build
+domains:
+  - name: adc_test
+    build_dir: /Users/tomcajot/Desktop/bap/grompack-firmware/tests/adc_test/build/adc_test
+flash_order:
+  - adc_test

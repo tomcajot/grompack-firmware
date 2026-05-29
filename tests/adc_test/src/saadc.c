@@ -1,7 +1,10 @@
 #include <nrfx_saadc.h>
 #include <zephyr/kernel.h>
+#include <zephyr/logging/log.h>
 
 #include "peripherals.h"
+
+LOG_MODULE_DECLARE(adc_logger, LOG_LEVEL_DBG);
 
 static nrfx_saadc_channel_t channels[2] = {
     NRFX_SAADC_DEFAULT_CHANNEL_SE(SAADC_INPUT_PIN_0, 0),
@@ -37,7 +40,7 @@ static void saadc_event_handler(nrfx_saadc_evt_t const* p_event) {
             LOG_INF("Sample: %d", sample);
             break;
         default:
-            status_flag = ERROR;
+            LOG_INF("saadc_event_handler default state");
             break;
     }
 }

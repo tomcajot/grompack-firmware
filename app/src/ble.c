@@ -1,6 +1,7 @@
 #include <zephyr/bluetooth/bluetooth.h>
 #include <zephyr/bluetooth/services/nus.h>
 #include <zephyr/kernel.h>
+#include <zephyr/logging/log.h>
 
 #include "peripherals.h"
 

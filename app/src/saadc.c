@@ -1,5 +1,6 @@
 #include <nrfx_saadc.h>
 #include <zephyr/kernel.h>
+#include <zephyr/logging/log.h>
 
 #include "peripherals.h"
 

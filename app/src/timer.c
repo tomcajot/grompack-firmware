@@ -1,8 +1,11 @@
 #include <nrfx_saadc.h>
 #include <nrfx_timer.h>
 #include <zephyr/kernel.h>
+#include <zephyr/logging/log.h>
 
 #include "peripherals.h"
+
+LOG_MODULE_DECLARE(grompack_logger, LOG_LEVEL_DBG);
 
 nrfx_timer_t timer_instance =
     NRFX_TIMER_INSTANCE(NRF_TIMER_INST_GET(SAADC_TIMER_INST_IDX));
