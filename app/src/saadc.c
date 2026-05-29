@@ -3,7 +3,7 @@
 
 #include "peripherals.h"
 
-// LOG_MODULE_DECLARE(grompack_logger, LOG_LEVEL_DBG);
+LOG_MODULE_DECLARE(grompack_logger, LOG_LEVEL_DBG);
 
 static struct neural_packet current_tx_packet;
 static uint16_t byte_fill_count = 0;
@@ -33,7 +33,7 @@ static void saadc_event_handler(nrfx_saadc_evt_t const* p_event) {
                 saadc_sample_buffer[(saadc_current_buffer++) % 2],
                 SAADC_BUFFER_SIZE);
             if (err != 0) {
-                status_flag = ERROR;
+                LOG_ERR("nrfx_saadc_buffer_set error: %08x", err);
                 return;
             }
             break;
@@ -41,7 +41,7 @@ static void saadc_event_handler(nrfx_saadc_evt_t const* p_event) {
         case NRFX_SAADC_EVT_DONE: {
             int16_t* raw_data = (int16_t*)(p_event->data.done.p_buffer);
 
-            // LOG_INF("Sample: %d", (int)raw_data[0]);
+            LOG_INF("Sample: %d", (int)raw_data[0]);
 
             for (int i = 0; i < (SAADC_BUFFER_SIZE / 2); i++) {
                 uint16_t sample1 = (uint16_t)raw_data[i * 2] & 0x0FFF;
@@ -59,7 +59,7 @@ static void saadc_event_handler(nrfx_saadc_evt_t const* p_event) {
                     err = k_msgq_put(&ble_data_queue, &current_tx_packet,
                                      K_NO_WAIT);
                     if (err != 0) {
-                        status_flag = ERROR;
+                        LOG_ERR("k_msgq_put error: %08x", err);
                         return;
                     }
                     byte_fill_count = 0;
@@ -67,9 +67,9 @@ static void saadc_event_handler(nrfx_saadc_evt_t const* p_event) {
                 }
             }
             break;
-        } /* NRFX_SAADC_EVT_DONE */
+        }
         default:
-            status_flag = ERROR;
+            LOG_INF("saadc_event_handler default state");
             break;
     }
 }
@@ -81,7 +81,7 @@ void configure_saadc(void) {
                 nrfx_saadc_irq_handler, 0, 0);
     err = nrfx_saadc_init(NRFX_SAADC_DEFAULT_CONFIG_IRQ_PRIORITY);
     if (err != 0) {
-        status_flag = ERROR;
+        LOG_ERR("nrfx_saadc_init error: %08x", err);
         return;
     }
 
@@ -89,7 +89,7 @@ void configure_saadc(void) {
     channels[1].channel_config.gain = NRF_SAADC_GAIN1_4;
     err = nrfx_saadc_channels_config(channels, 2);
     if (err != 0) {
-        status_flag = ERROR;
+        LOG_ERR("nrfx_saadc_channels_config error: %08x", err);
         return;
     }
 
@@ -98,25 +98,25 @@ void configure_saadc(void) {
                                        NRF_SAADC_RESOLUTION_12BIT,
                                        &saadc_adv_config, saadc_event_handler);
     if (err != 0) {
-        status_flag = ERROR;
+        LOG_ERR("nrfx_saadc_advanced_mode_set error: %08x", err);
         return;
     }
 
     err = nrfx_saadc_buffer_set(saadc_sample_buffer[0], SAADC_BUFFER_SIZE);
     if (err != 0) {
-        status_flag = ERROR;
+        LOG_ERR("nrfx_saadc_buffer_set error: %08x", err);
         return;
     }
 
     err = nrfx_saadc_buffer_set(saadc_sample_buffer[1], SAADC_BUFFER_SIZE);
     if (err != 0) {
-        status_flag = ERROR;
+        LOG_ERR("nrfx_saadc_buffer_set error: %08x", err);
         return;
     }
 
     err = nrfx_saadc_mode_trigger();
     if (err != 0) {
-        status_flag = ERROR;
+        LOG_ERR("nrfx_saadc_mode_trigger error: %08x", err);
         return;
     }
 }

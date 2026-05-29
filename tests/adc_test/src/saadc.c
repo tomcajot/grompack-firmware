@@ -27,14 +27,14 @@ static void saadc_event_handler(nrfx_saadc_evt_t const* p_event) {
                 saadc_sample_buffer[(saadc_current_buffer++) % 2],
                 SAADC_BUFFER_SIZE);
             if (err != 0) {
-                status_flag = ERROR;
+                LOG_ERR("nrfx_saadc_buffer_set error: %08x", err);
                 return;
             }
             break;
 
         case NRFX_SAADC_EVT_DONE:
             int16_t sample = ((int16_t*)(p_event->data.done.p_buffer))[0];
-            // TODO change this to output through segger?
+            LOG_INF("Sample: %d", sample);
             break;
         default:
             status_flag = ERROR;
@@ -49,7 +49,7 @@ void configure_saadc(void) {
                 nrfx_saadc_irq_handler, 0, 0);
     err = nrfx_saadc_init(NRFX_SAADC_DEFAULT_CONFIG_IRQ_PRIORITY);
     if (err != 0) {
-        status_flag = ERROR;
+        LOG_ERR("nrfx_saadc_init error: %08x", err);
         return;
     }
 
@@ -57,7 +57,7 @@ void configure_saadc(void) {
     channels[1].channel_config.gain = NRF_SAADC_GAIN1_4;
     err = nrfx_saadc_channels_config(channels, 2);
     if (err != 0) {
-        status_flag = ERROR;
+        LOG_ERR("nrfx_saadc_channels_config error: %08x", err);
         return;
     }
 
@@ -66,25 +66,25 @@ void configure_saadc(void) {
                                        NRF_SAADC_RESOLUTION_12BIT,
                                        &saadc_adv_config, saadc_event_handler);
     if (err != 0) {
-        status_flag = ERROR;
+        LOG_ERR("nrfx_saadc_advanced_mode_set error: %08x", err);
         return;
     }
 
     err = nrfx_saadc_buffer_set(saadc_sample_buffer[0], SAADC_BUFFER_SIZE);
     if (err != 0) {
-        status_flag = ERROR;
+        LOG_ERR("nrfx_saadc_buffer_set error: %08x", err);
         return;
     }
 
     err = nrfx_saadc_buffer_set(saadc_sample_buffer[1], SAADC_BUFFER_SIZE);
     if (err != 0) {
-        status_flag = ERROR;
+        LOG_ERR("nrfx_saadc_buffer_set error: %08x", err);
         return;
     }
 
     err = nrfx_saadc_mode_trigger();
     if (err != 0) {
-        status_flag = ERROR;
+        LOG_ERR("nrfx_saadc_mode_trigger error: %08x", err);
         return;
     }
 }

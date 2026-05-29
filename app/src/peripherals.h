@@ -16,19 +16,6 @@
 
 extern nrfx_timer_t timer_instance;
 
-typedef enum {
-    STATUS_OK = 0,
-    ERROR = BIT(1),
-    // dees kunnen we extenden om wat meer error types te hebben en dan kunnen
-    // we elke keer |= om die bij te houden. da werkt met Segger RTT dan kunnen
-    // we op de SWD ook soort van debuggen.
-
-    // kunnen we niet LOG_ERR() gebruiken voor debugging? want dan krijgen we
-    // ook een berichtje erbij
-} system_status_t;
-
-extern system_status_t status_flag;
-
 struct neural_packet {
     uint32_t sample_index;
     uint8_t packed_data[PACKED_BUFFER_SIZE];

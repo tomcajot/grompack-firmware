@@ -17,7 +17,7 @@ void configure_ppi(void) {
         nrf_saadc_task_address_get(NRF_SAADC, NRF_SAADC_TASK_SAMPLE),
         &gppi_handle_sample);
     if (err != 0) {
-        status_flag = ERROR;
+        LOG_ERR("nrfx_gppi_conn_alloc error: %08x", err);
         return;
     }
 
@@ -26,7 +26,7 @@ void configure_ppi(void) {
         nrf_saadc_task_address_get(NRF_SAADC, NRF_SAADC_TASK_START),
         &gppi_handle_start);
     if (err != 0) {
-        status_flag = ERROR;
+        LOG_ERR("nrfx_gppi_conn_alloc error: %08x", err);
         return;
     }
 

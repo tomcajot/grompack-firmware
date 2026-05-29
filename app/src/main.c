@@ -6,8 +6,6 @@
 
 K_MSGQ_DEFINE(ble_data_queue, sizeof(struct neural_packet), 10, 4);
 
-system_status_t status_flag = STATUS_OK;
-
 int main(void) {
     int err;
 
@@ -25,10 +23,10 @@ int main(void) {
                     bt_nus_send(NULL, (uint8_t*)&tx_packet, sizeof(tx_packet));
 
                 if (err && err != -EAGAIN && err != -ENOTCONN) {
-                    // LOG_INF("Transmission error: %d\n", err);
+                    LOG_ERR("Transmission error: %d\n", err);
                 }
             } else {
-                // LOG_INF("Laptop not subscribed, skipping transmission.\n");
+                LOG_INF("Laptop not subscribed, skipping transmission.\n");
             }
         }
     }

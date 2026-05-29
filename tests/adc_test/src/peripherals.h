@@ -13,16 +13,6 @@
 
 extern nrfx_timer_t timer_instance;
 
-typedef enum {
-    STATUS_OK = 0,
-    ERROR = BIT(1),
-    // dees kunnen we extenden om wat meer error types te hebben en dan kunnen
-    // we elke keer |= om die bij te houden. da werkt met Segger RTT dan kunnen
-    // we op de SWD ook soort van debuggen.
-} system_status_t;
-
-extern system_status_t status_flag;
-
 void configure_timer(void);
 void configure_saadc(void);
 void configure_ppi(void);

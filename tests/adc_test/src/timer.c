@@ -17,7 +17,7 @@ void configure_timer(void) {
 
     err = nrfx_timer_init(&timer_instance, &timer_config, NULL);
     if (err != 0) {
-        status_flag = ERROR;
+        LOG_ERR("nrfx_timer_init error: %08x", err);
         return;
     }
     uint32_t timer_ticks =
