@@ -4,12 +4,8 @@
 
 LOG_MODULE_REGISTER(gpio_logger, LOG_LEVEL_DBG);
 
-// static const struct gpio_dt_spec toggle_pin =
-// GPIO_DT_SPEC_GET(DT_NODELABEL(test_p0_02), gpios);
-
-#define LED0_NODE DT_ALIAS(led0)
 static const struct gpio_dt_spec toggle_pin =
-    GPIO_DT_SPEC_GET(LED0_NODE, gpios);
+    GPIO_DT_SPEC_GET(DT_NODELABEL(test_p0_00), gpios);
 
 int main(void) {
     int ret;

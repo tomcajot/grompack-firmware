@@ -37,7 +37,7 @@ static void saadc_event_handler(nrfx_saadc_evt_t const* p_event) {
 
         case NRFX_SAADC_EVT_DONE:
             int16_t sample = ((int16_t*)(p_event->data.done.p_buffer))[0];
-            LOG_INF("Sample: %d", sample);
+            LOG_INF("sample: %d", sample);
             break;
         default:
             LOG_INF("saadc_event_handler default state");

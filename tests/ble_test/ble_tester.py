@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from bleak import BleakClient, BleakScanner
 
-DEVICE_NAME       = "grompack"
+DEVICE_NAME       = "ble_test"
 NUS_TX_CHAR_UUID  = "6e400003-b5a3-f393-e0a9-e50e24dcca9e"
 PACKED_BUFFER_SIZE = 240
 PACKET_FORMAT      = f"<I{PACKED_BUFFER_SIZE}s"
