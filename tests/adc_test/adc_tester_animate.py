@@ -8,7 +8,7 @@ from collections import deque
 import re
 
 DEVICE = "nRF54L15_M33"
-MAX_POINTS = 500
+MAX_POINTS = 50
 
 ansi_escape = re.compile(r'\x1b\[[0-9;]*m')
 
@@ -31,8 +31,11 @@ ax.set_xlim(0, MAX_POINTS)
 
 leftover_string = ""
 
+# i = 0
+
 def update(frame):
     global leftover_string
+    # global i
     
     new_data_added = False
     
@@ -54,9 +57,11 @@ def update(frame):
         for line_str in lines:
             clean_line = ansi_escape.sub("", line_str).lower()
             
-            if "sample:" in clean_line:
+            if "saadc" in clean_line:
                 try:
-                    val = float(clean_line.split("sample:")[1].strip())
+                    val = int(clean_line.split("saadc")[1].strip())
+                    # i += 1
+                    # if ((i % 2) == 0):
                     values.append(val)
                 except (ValueError, IndexError):
                     pass

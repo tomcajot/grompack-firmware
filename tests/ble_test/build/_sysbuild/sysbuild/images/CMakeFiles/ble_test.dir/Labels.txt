@@ -1,0 +1,13 @@
+# Target labels
+ ble_test
+# Source files and their labels
+/Users/tomcajot/Desktop/bap/grompack-firmware/tests/ble_test/build/_sysbuild/sysbuild/images/CMakeFiles/ble_test
+/Users/tomcajot/Desktop/bap/grompack-firmware/tests/ble_test/build/_sysbuild/sysbuild/images/CMakeFiles/ble_test.rule
+/Users/tomcajot/Desktop/bap/grompack-firmware/tests/ble_test/build/_sysbuild/sysbuild/images/CMakeFiles/ble_test-complete.rule
+/Users/tomcajot/Desktop/bap/grompack-firmware/tests/ble_test/build/_sysbuild/sysbuild/images/ble_test-prefix/src/ble_test-stamp/ble_test-build.rule
+/Users/tomcajot/Desktop/bap/grompack-firmware/tests/ble_test/build/_sysbuild/sysbuild/images/ble_test-prefix/src/ble_test-stamp/ble_test-configure.rule
+/Users/tomcajot/Desktop/bap/grompack-firmware/tests/ble_test/build/_sysbuild/sysbuild/images/ble_test-prefix/src/ble_test-stamp/ble_test-download.rule
+/Users/tomcajot/Desktop/bap/grompack-firmware/tests/ble_test/build/_sysbuild/sysbuild/images/ble_test-prefix/src/ble_test-stamp/ble_test-install.rule
+/Users/tomcajot/Desktop/bap/grompack-firmware/tests/ble_test/build/_sysbuild/sysbuild/images/ble_test-prefix/src/ble_test-stamp/ble_test-mkdir.rule
+/Users/tomcajot/Desktop/bap/grompack-firmware/tests/ble_test/build/_sysbuild/sysbuild/images/ble_test-prefix/src/ble_test-stamp/ble_test-patch.rule
+/Users/tomcajot/Desktop/bap/grompack-firmware/tests/ble_test/build/_sysbuild/sysbuild/images/ble_test-prefix/src/ble_test-stamp/ble_test-update.rule

@@ -5,7 +5,7 @@
 LOG_MODULE_REGISTER(gpio_logger, LOG_LEVEL_DBG);
 
 static const struct gpio_dt_spec toggle_pin =
-    GPIO_DT_SPEC_GET(DT_NODELABEL(test_p0_00), gpios);
+    GPIO_DT_SPEC_GET(DT_NODELABEL(test_p2_10), gpios);
 
 int main(void) {
     int ret;
@@ -27,6 +27,8 @@ int main(void) {
             LOG_ERR("GPIO toggle error (%d)", ret);
             return 0;
         }
+
+        LOG_INF("test");
 
         k_msleep(1000);
     }

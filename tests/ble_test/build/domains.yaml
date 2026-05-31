@@ -1,0 +1,7 @@
+default: ble_test
+build_dir: /Users/tomcajot/Desktop/bap/grompack-firmware/tests/ble_test/build
+domains:
+  - name: ble_test
+    build_dir: /Users/tomcajot/Desktop/bap/grompack-firmware/tests/ble_test/build/ble_test
+flash_order:
+  - ble_test

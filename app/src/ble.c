@@ -64,3 +64,29 @@ void configure_ble(void) {
 
     LOG_INF("Bluetooth initialized and advertising successfully.\n");
 }
+
+static void on_connected(struct bt_conn* conn, uint8_t err) {
+    if (err) {
+        LOG_ERR("Connection failed, err 0x%02x\n", err);
+        return;
+    }
+    LOG_INF("Connected!\n");
+
+    bt_conn_le_data_len_update(conn, BT_LE_DATA_LEN_PARAM_MAX);
+    bt_conn_le_phy_update(conn, BT_CONN_LE_PHY_PARAM_2M);
+}
+
+static void on_disconnected(struct bt_conn* conn, uint8_t reason) {
+    LOG_INF("Disconnected, reason 0x%02x\n", reason);
+
+    int err = bt_le_adv_start(BT_LE_ADV_CONN_FAST_1, ad, ARRAY_SIZE(ad), sd,
+                              ARRAY_SIZE(sd));
+    if (err) {
+        LOG_ERR("Failed to restart advertising (err %d)\n", err);
+    }
+}
+
+BT_CONN_CB_DEFINE(conn_callbacks) = {
+    .connected = on_connected,
+    .disconnected = on_disconnected,
+};

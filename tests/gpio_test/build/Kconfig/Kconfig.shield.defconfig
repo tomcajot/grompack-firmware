@@ -1,0 +1,2 @@
+osource "/Users/tomcajot/Desktop/bap/grompack-firmware/boards/shields/*/Kconfig.defconfig"
+osource "/opt/nordic/ncs/v3.3.0/nrf/boards/shields/*/Kconfig.defconfig"

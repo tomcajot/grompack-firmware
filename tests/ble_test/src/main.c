@@ -3,15 +3,15 @@
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
 
-LOG_MODULE_REGISTER(adc_logger, LOG_LEVEL_DBG);
+LOG_MODULE_REGISTER(ble_logger, LOG_LEVEL_DBG);
 
 #define DEVICE_NAME CONFIG_BT_DEVICE_NAME
 #define DEVICE_NAME_LEN (sizeof(DEVICE_NAME) - 1)
 
 struct neural_packet {
     uint32_t sample_index;
-    uint16_t ch1_data[60];
-    uint16_t ch2_data[60];
+    uint16_t ch1_data[120];
+    uint16_t ch2_data[120];
 } __packed;
 
 K_MSGQ_DEFINE(ble_data_queue, sizeof(struct neural_packet), 10, 4);
@@ -83,6 +83,32 @@ struct bt_nus_cb nus_listener = {
     .received = received,
 };
 
+static void on_connected(struct bt_conn* conn, uint8_t err) {
+    if (err) {
+        LOG_ERR("Connection failed, err 0x%02x\n", err);
+        return;
+    }
+    LOG_INF("Connected!\n");
+
+    bt_conn_le_data_len_update(conn, BT_LE_DATA_LEN_PARAM_MAX);
+    bt_conn_le_phy_update(conn, BT_CONN_LE_PHY_PARAM_2M);
+}
+
+static void on_disconnected(struct bt_conn* conn, uint8_t reason) {
+    LOG_INF("Disconnected, reason 0x%02x\n", reason);
+
+    int err = bt_le_adv_start(BT_LE_ADV_CONN_FAST_1, ad, ARRAY_SIZE(ad), sd,
+                              ARRAY_SIZE(sd));
+    if (err) {
+        LOG_ERR("Failed to restart advertising (err %d)\n", err);
+    }
+}
+
+BT_CONN_CB_DEFINE(conn_callbacks) = {
+    .connected = on_connected,
+    .disconnected = on_disconnected,
+};
+
 int main(void) {
     int err;
 
@@ -103,6 +129,7 @@ int main(void) {
     struct neural_packet tx_packet;
 
     while (true) {
+        LOG_INF("in loop");
         if (k_msgq_get(&ble_data_queue, &tx_packet, K_FOREVER) == 0) {
             err = bt_nus_send(NULL, (uint8_t*)&tx_packet, sizeof(tx_packet));
 

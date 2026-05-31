@@ -63,11 +63,23 @@
 };
 
 &lfxo {
-	status = "okay";
-	load-capacitors = "external";
+    status = "okay";
+    load-capacitors = "internal";
+    load-capacitance-femtofarad = <6000>;
 };
 
 &hfxo {
-	status = "okay";
-	load-capacitors = "external";
+    status = "okay";
+    load-capacitors = "internal";
+    load-capacitance-femtofarad = <7000>;
 };
+
+// &lfxo {
+// 	status = "okay";
+// 	load-capacitors = "external";
+// };
+
+// &hfxo {
+// 	status = "okay";
+// 	load-capacitors = "external";
+// };
