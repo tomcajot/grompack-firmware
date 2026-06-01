@@ -12,6 +12,8 @@ LOG_MODULE_DECLARE(grompack_logger, LOG_LEVEL_DBG);
 
 bool is_laptop_subscribed = false;
 
+extern struct k_msgq command_queue;
+
 static const struct bt_data ad[] = {
     BT_DATA_BYTES(BT_DATA_FLAGS, (BT_LE_AD_GENERAL | BT_LE_AD_NO_BREDR)),
     BT_DATA(BT_DATA_NAME_COMPLETE, DEVICE_NAME, DEVICE_NAME_LEN),
@@ -23,18 +25,30 @@ static const struct bt_data sd[] = {
 
 static void notif_enabled(bool enabled, void* ctx) {
     ARG_UNUSED(ctx);
-    LOG_INF("Laptop Subscription: %s\n", (enabled ? "Enabled" : "Disabled"));
+    LOG_INF("Laptop Subscription: %s", (enabled ? "Enabled" : "Disabled"));
 
     is_laptop_subscribed = enabled;
 
-    k_msgq_purge(&ble_data_queue);
+    if (!enabled) {
+        uint8_t stop_cmd = 0x02;
+        k_msgq_put(&command_queue, &stop_cmd, K_NO_WAIT);
+    }
+
+    //k_msgq_purge(&ble_data_queue);
 }
 
 static void received(struct bt_conn* conn, const void* data, uint16_t len,
                      void* ctx) {
     ARG_UNUSED(conn);
     ARG_UNUSED(ctx);
-    LOG_INF("Command Received from Laptop: %.*s\n", len, (char*)data);
+
+    if (len == 0) return;
+
+    uint8_t command = ((const uint8_t*)data)[0];
+
+    LOG_INF("command received: 0x%02x", command);
+
+    k_msgq_put(&command_queue, &command, K_NO_WAIT);
 }
 
 struct bt_nus_cb nus_listener = {
@@ -47,47 +61,50 @@ void configure_ble(void) {
 
     err = bt_enable(NULL);
     if (err) {
-        LOG_ERR("BLE init failed (err %d)\n", err);
+        LOG_ERR("BLE init failed (err %d)", err);
         return;
     }
 
     err = bt_nus_cb_register(&nus_listener, NULL);
     if (err) {
-        LOG_ERR("NUS callbacks failed to register (err %d)\n", err);
+        LOG_ERR("NUS callbacks failed to register (err %d)", err);
         return;
     }
 
     err = bt_le_adv_start(BT_LE_ADV_CONN_FAST_1, ad, ARRAY_SIZE(ad), sd,
                           ARRAY_SIZE(sd));
     if (err) {
-        LOG_ERR("Advertising failed to start (err %d)\n", err);
+        LOG_ERR("Advertising failed to start (err %d)", err);
         return;
     }
 
-    LOG_INF("Bluetooth initialized and advertising successfully.\n");
+    LOG_INF("Bluetooth initialized and advertising successfully.");
 }
 
 static void on_connected(struct bt_conn* conn, uint8_t err) {
     if (err) {
-        LOG_ERR("Connection failed, err 0x%02x\n", err);
+        LOG_ERR("Connection failed, err 0x%02x", err);
         return;
     }
-    LOG_INF("Connected!\n");
+    LOG_INF("Connected!", err);
 
     bt_conn_le_data_len_update(conn, BT_LE_DATA_LEN_PARAM_MAX);
     bt_conn_le_phy_update(conn, BT_CONN_LE_PHY_PARAM_2M);
 }
 
 static void on_disconnected(struct bt_conn* conn, uint8_t reason) {
-    LOG_INF("Disconnected, reason 0x%02x\n", reason);
+    LOG_INF("Disconnected, reason 0x%02x", reason);
 
     is_laptop_subscribed = false;
-    k_msgq_purge(&ble_data_queue);
+    //k_msgq_purge(&ble_data_queue);
+
+    uint8_t stop_cmd = 0x02;
+    k_msgq_put(&command_queue, &stop_cmd, K_NO_WAIT);
 
     int err = bt_le_adv_start(BT_LE_ADV_CONN_FAST_1, ad, ARRAY_SIZE(ad), sd,
                               ARRAY_SIZE(sd));
     if (err) {
-        LOG_ERR("Failed to restart advertising (err %d)\n", err);
+        LOG_ERR("Failed to restart advertising (err %d)", err);
     }
 }
 

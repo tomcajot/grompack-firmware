@@ -6,9 +6,49 @@
 
 LOG_MODULE_DECLARE(grompack_logger, LOG_LEVEL_DBG);
 
-static struct neural_packet current_tx_packet;
+static struct neural_packet *current_tx_packet = NULL;
 static uint16_t byte_fill_count = 0;
 static uint32_t global_sample_counter = 0;
+
+void purge_pipeline(void) {
+    
+    if (current_tx_packet != NULL) {
+        k_mem_slab_free(&ble_payload_slab, (void *)current_tx_packet);
+        current_tx_packet = NULL;
+    }
+    
+    byte_fill_count = 0;
+
+    struct neural_packet *stale_packet;
+    while ((stale_packet = k_fifo_get(&ble_pointer_fifo, K_NO_WAIT)) != NULL) {
+        k_mem_slab_free(&ble_payload_slab, (void *)stale_packet);
+    }
+
+    LOG_INF("Pipeline flushed and memory returned to slab.");
+}
+
+void stop_hardware_pipeline(void) {
+    LOG_INF("Halting hardware pipeline...");
+    
+    nrfx_timer_disable(&timer_instance);
+    
+    nrfx_saadc_abort(); 
+    purge_pipeline();
+}
+
+void start_hardware_pipeline(void) {
+    LOG_INF("Booting hardware pipeline...");
+
+    global_sample_counter = 0;
+    saadc_current_buffer = 0;
+
+    nrfx_saadc_buffer_set(saadc_sample_buffer[0], SAADC_BUFFER_SIZE);
+    nrfx_saadc_buffer_set(saadc_sample_buffer[1], SAADC_BUFFER_SIZE);
+    
+    nrfx_saadc_mode_trigger();
+
+    nrfx_timer_enable(&timer_instance);
+}
 
 static nrfx_saadc_channel_t channels[2] = {
     NRFX_SAADC_DEFAULT_CHANNEL_SE(SAADC_INPUT_PIN_0, 0),
@@ -22,7 +62,8 @@ static void saadc_event_handler(nrfx_saadc_evt_t const* p_event) {
     int err;
     switch (p_event->type) {
         case NRFX_SAADC_EVT_READY:
-            nrfx_timer_enable(&timer_instance);
+            //nrfx_timer_enable(&timer_instance);
+            //
             break;
 
         case NRFX_SAADC_EVT_BUF_REQ:
@@ -36,36 +77,36 @@ static void saadc_event_handler(nrfx_saadc_evt_t const* p_event) {
             break;
 
         case NRFX_SAADC_EVT_DONE: {
+
+            if (current_tx_packet == NULL) {
+                if (k_mem_slab_alloc(&ble_payload_slab, (void **)&current_tx_packet, K_NO_WAIT) != 0) {
+                    global_sample_counter += (SAADC_BUFFER_SIZE / 2);
+                    break;
+                }
+            }
+
+            current_tx_packet->sample_index = global_sample_counter;
+
             int16_t* raw_data = (int16_t*)(p_event->data.done.p_buffer);
 
             for (int i = 0; i < (SAADC_BUFFER_SIZE / 2); i++) {
-                if (byte_fill_count == 0) {
-                    current_tx_packet.sample_index = global_sample_counter;
-                }
-
-                int16_t raw1 = raw_data[i * 2];
-                int16_t raw2 = raw_data[(i * 2) + 1];
-                if (raw1 < 0) raw1 = 0;
-                if (raw2 < 0) raw2 = 0;
-
-                uint16_t sample1 = (uint16_t)raw1 & 0x0FFF;
-                uint16_t sample2 = (uint16_t)raw2 & 0x0FFF;
-
-                current_tx_packet.packed_data[byte_fill_count++] =
+                
+                uint16_t sample1 = (uint16_t)raw_data[i * 2] & 0x0FFF;
+                uint16_t sample2 = (uint16_t)raw_data[(i * 2) + 1] & 0x0FFF;
+                
+                current_tx_packet->packed_data[byte_fill_count++] =
                     sample1 & 0xFF;
-                current_tx_packet.packed_data[byte_fill_count++] =
+                current_tx_packet->packed_data[byte_fill_count++] =
                     ((sample1 >> 8) & 0x0F) | ((sample2 << 4) & 0xF0);
-                current_tx_packet.packed_data[byte_fill_count++] =
+                current_tx_packet->packed_data[byte_fill_count++] =
                     (sample2 >> 4) & 0xFF;
 
                 global_sample_counter++;
-
+                
                 if (byte_fill_count >= PACKED_BUFFER_SIZE) {
-                    err = k_msgq_put(&ble_data_queue, &current_tx_packet,
-                                     K_NO_WAIT);
-                    if (err != 0) {
-                        LOG_WRN("k_msgq_put dropped packet: %d", err);
-                    }
+
+                    k_fifo_put(&ble_pointer_fifo, current_tx_packet);
+                    current_tx_packet = NULL;
                     byte_fill_count = 0;
                 }
             }
