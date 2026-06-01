@@ -73,13 +73,3 @@
     load-capacitors = "internal";
     load-capacitance-femtofarad = <7000>;
 };
-
-// &lfxo {
-// 	status = "okay";
-// 	load-capacitors = "external";
-// };
-
-// &hfxo {
-// 	status = "okay";
-// 	load-capacitors = "external";
-// };

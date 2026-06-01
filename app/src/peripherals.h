@@ -4,11 +4,11 @@
 #include <nrfx_timer.h>
 #include <zephyr/bluetooth/services/nus.h>
 #include <zephyr/kernel.h>
-// #include <zephyr/logging/log.h>
 
 #define PACKED_BUFFER_SIZE 240
 
-#define SAADC_SAMPLE_INTERVAL_US 80
+// todo change to 80 and check in saadc if acq max still works or adapt.
+#define SAADC_SAMPLE_INTERVAL_US 100
 #define SAADC_BUFFER_SIZE 16
 #define SAADC_INPUT_PIN_0 NRFX_ANALOG_EXTERNAL_AIN4
 #define SAADC_INPUT_PIN_1 NRFX_ANALOG_EXTERNAL_AIN5

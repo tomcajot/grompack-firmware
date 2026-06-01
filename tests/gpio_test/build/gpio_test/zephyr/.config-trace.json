@@ -88,17 +88,6 @@
     ]
   ],
   [
-    "CONFIG_DT_HAS_NORDIC_NRF_CLOCK_ENABLED",
-    "n",
-    "bool",
-    "y",
-    "default",
-    [
-      "/Users/tomcajot/Desktop/bap/grompack-firmware/tests/gpio_test/build/gpio_test/Kconfig/Kconfig.dts",
-      5803
-    ]
-  ],
-  [
     "CONFIG_DT_HAS_NORDIC_NRF_DPPIC_ENABLED",
     "n",
     "bool",
@@ -5280,14 +5269,6 @@
     ]
   ],
   [
-    "CONFIG_NRFX_CLOCK_LOG",
-    "y",
-    "bool",
-    null,
-    "unset",
-    null
-  ],
-  [
     "CONFIG_NRFX_GPIOTE_LOG",
     "y",
     "bool",
@@ -5305,60 +5286,6 @@
   ],
   [
     "CONFIG_NRFX_CLOCK",
-    "y",
-    "bool",
-    "y",
-    "select",
-    [
-      "CLOCK_CONTROL_NRF && !CLOCK_CONTROL_NRF_FORCE_ALT && DT_HAS_NORDIC_NRF_CLOCK_ENABLED && CLOCK_CONTROL"
-    ]
-  ],
-  [
-    "CONFIG_NRFX_CLOCK_USE_LFRC_CALIBRATION",
-    "y",
-    "bool",
-    null,
-    "unset",
-    null
-  ],
-  [
-    "CONFIG_NRFX_CLOCK_LFXO_TWO_STAGE_ENABLED",
-    "y",
-    "bool",
-    "y",
-    "select",
-    [
-      "CLOCK_CONTROL_NRF_K32SRC_XTAL && !SOC_SERIES_BSIM_NRFXX && !CLOCK_CONTROL_NRF_FORCE_ALT && <choice CLOCK_CONTROL_NRF_SOURCE>"
-    ]
-  ],
-  [
-    "CONFIG_NRFX_CLOCK_LF_CAL_ENABLED",
-    "y",
-    "bool",
-    null,
-    "unset",
-    null
-  ],
-  [
-    "CONFIG_NRFX_CLOCK_LF_SRC_RC",
-    "y",
-    "bool",
-    null,
-    "unset",
-    null
-  ],
-  [
-    "CONFIG_NRFX_CLOCK_LF_SRC_XTAL",
-    "y",
-    "bool",
-    "y",
-    "select",
-    [
-      "CLOCK_CONTROL_NRF_K32SRC_XTAL && !CLOCK_CONTROL_NRF_FORCE_ALT && <choice CLOCK_CONTROL_NRF_SOURCE>"
-    ]
-  ],
-  [
-    "CONFIG_NRFX_CLOCK_LF_SRC_SYNTH",
     "y",
     "bool",
     null,
@@ -6621,17 +6548,6 @@
     [
       "/opt/nordic/ncs/v3.3.0/zephyr/soc/nordic/Kconfig",
       64
-    ]
-  ],
-  [
-    "CONFIG_HAS_HW_NRF_CLOCK",
-    "n",
-    "bool",
-    "y",
-    "default",
-    [
-      "/opt/nordic/ncs/v3.3.0/zephyr/soc/nordic/common/Kconfig.peripherals",
-      33
     ]
   ],
   [
@@ -8955,141 +8871,6 @@
     null
   ],
   [
-    "CONFIG_CLOCK_CONTROL_NRF",
-    "y",
-    "bool",
-    "y",
-    "default",
-    [
-      "/opt/nordic/ncs/v3.3.0/zephyr/drivers/clock_control/Kconfig.nrf",
-      15
-    ]
-  ],
-  [
-    "CONFIG_CLOCK_CONTROL_NRF_K32SRC_FREQUENCY",
-    "y",
-    "int",
-    "32768",
-    "default",
-    [
-      "/opt/nordic/ncs/v3.3.0/zephyr/drivers/clock_control/Kconfig.nrf",
-      27
-    ]
-  ],
-  [
-    "CONFIG_CLOCK_CONTROL_NRF_K32SRC_RC",
-    "y",
-    "bool",
-    null,
-    "unset",
-    null
-  ],
-  [
-    "CONFIG_CLOCK_CONTROL_NRF_K32SRC_XTAL",
-    "y",
-    "bool",
-    "y",
-    "default",
-    [
-      "/opt/nordic/ncs/v3.3.0/zephyr/drivers/clock_control/Kconfig.nrf",
-      35
-    ]
-  ],
-  [
-    "CONFIG_CLOCK_CONTROL_NRF_K32SRC_SYNTH",
-    "y",
-    "bool",
-    null,
-    "unset",
-    null
-  ],
-  [
-    "CONFIG_CLOCK_CONTROL_NRF_HFINT_CALIBRATION",
-    "y",
-    "bool",
-    null,
-    "unset",
-    null
-  ],
-  [
-    "CONFIG_CLOCK_CONTROL_NRF_K32SRC_500PPM",
-    "y",
-    "bool",
-    null,
-    "unset",
-    null
-  ],
-  [
-    "CONFIG_CLOCK_CONTROL_NRF_K32SRC_250PPM",
-    "y",
-    "bool",
-    null,
-    "unset",
-    null
-  ],
-  [
-    "CONFIG_CLOCK_CONTROL_NRF_K32SRC_150PPM",
-    "y",
-    "bool",
-    null,
-    "unset",
-    null
-  ],
-  [
-    "CONFIG_CLOCK_CONTROL_NRF_K32SRC_100PPM",
-    "y",
-    "bool",
-    null,
-    "unset",
-    null
-  ],
-  [
-    "CONFIG_CLOCK_CONTROL_NRF_K32SRC_75PPM",
-    "y",
-    "bool",
-    null,
-    "unset",
-    null
-  ],
-  [
-    "CONFIG_CLOCK_CONTROL_NRF_K32SRC_50PPM",
-    "y",
-    "bool",
-    "y",
-    "default",
-    [
-      "/opt/nordic/ncs/v3.3.0/zephyr/drivers/clock_control/Kconfig.nrf",
-      167
-    ]
-  ],
-  [
-    "CONFIG_CLOCK_CONTROL_NRF_K32SRC_30PPM",
-    "y",
-    "bool",
-    null,
-    "unset",
-    null
-  ],
-  [
-    "CONFIG_CLOCK_CONTROL_NRF_K32SRC_20PPM",
-    "y",
-    "bool",
-    null,
-    "unset",
-    null
-  ],
-  [
-    "CONFIG_CLOCK_CONTROL_NRF_ACCURACY",
-    "n",
-    "int",
-    "50",
-    "default",
-    [
-      "/opt/nordic/ncs/v3.3.0/zephyr/drivers/clock_control/Kconfig.nrf",
-      202
-    ]
-  ],
-  [
     "CONFIG_COMPARATOR",
     "y",
     "bool",
@@ -10960,11 +10741,9 @@
     "CONFIG_NOTIFY",
     "y",
     "bool",
-    "y",
-    "select",
-    [
-      "ONOFF"
-    ]
+    null,
+    "unset",
+    null
   ],
   [
     "CONFIG_BASE64",
@@ -10978,11 +10757,9 @@
     "CONFIG_ONOFF",
     "y",
     "bool",
-    "y",
-    "select",
-    [
-      "CLOCK_CONTROL_NRF && DT_HAS_NORDIC_NRF_CLOCK_ENABLED && CLOCK_CONTROL"
-    ]
+    null,
+    "unset",
+    null
   ],
   [
     "CONFIG_UTF8",

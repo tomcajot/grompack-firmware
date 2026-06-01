@@ -26,6 +26,8 @@ static void notif_enabled(bool enabled, void* ctx) {
     LOG_INF("Laptop Subscription: %s\n", (enabled ? "Enabled" : "Disabled"));
 
     is_laptop_subscribed = enabled;
+
+    k_msgq_purge(&ble_data_queue);
 }
 
 static void received(struct bt_conn* conn, const void* data, uint16_t len,
@@ -78,6 +80,9 @@ static void on_connected(struct bt_conn* conn, uint8_t err) {
 
 static void on_disconnected(struct bt_conn* conn, uint8_t reason) {
     LOG_INF("Disconnected, reason 0x%02x\n", reason);
+
+    is_laptop_subscribed = false;
+    k_msgq_purge(&ble_data_queue);
 
     int err = bt_le_adv_start(BT_LE_ADV_CONN_FAST_1, ad, ARRAY_SIZE(ad), sd,
                               ARRAY_SIZE(sd));

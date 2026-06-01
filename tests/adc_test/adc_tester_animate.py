@@ -8,7 +8,7 @@ from collections import deque
 import re
 
 DEVICE = "nRF54L15_M33"
-MAX_POINTS = 50
+MAX_POINTS = 75
 
 ansi_escape = re.compile(r'\x1b\[[0-9;]*m')
 

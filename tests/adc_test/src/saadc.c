@@ -7,7 +7,7 @@
 LOG_MODULE_DECLARE(adc_logger, LOG_LEVEL_DBG);
 
 static nrfx_saadc_channel_t channel =
-    NRFX_SAADC_DEFAULT_CHANNEL_SE(NRFX_ANALOG_EXTERNAL_AIN6, 0);
+    NRFX_SAADC_DEFAULT_CHANNEL_SE(NRFX_ANALOG_EXTERNAL_AIN5, 0);
 
 static int16_t saadc_sample_buffer[2][SAADC_BUFFER_SIZE];
 
@@ -57,6 +57,8 @@ void configure_saadc(void) {
     }
 
     channel.channel_config.gain = NRF_SAADC_GAIN1_4;
+    channel.channel_config.acq_time = NRF_SAADC_ACQTIME_MAX;
+
     err = nrfx_saadc_channels_config(&channel, 1);
     if (err != 0) {
         LOG_ERR("nrfx_saadc_channels_config error: %08x", err);

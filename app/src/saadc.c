@@ -16,10 +16,6 @@ static nrfx_saadc_channel_t channels[2] = {
 
 static int16_t saadc_sample_buffer[2][SAADC_BUFFER_SIZE];
 
-// maybe we can use this as a packet index?
-// if not then i would have wanted to turn this into a bool but thats
-// not the best as later on they use %2 to count the index which is a
-// "safer?" atomic instruction.
 static uint32_t saadc_current_buffer = 0;
 
 static void saadc_event_handler(nrfx_saadc_evt_t const* p_event) {
@@ -42,11 +38,18 @@ static void saadc_event_handler(nrfx_saadc_evt_t const* p_event) {
         case NRFX_SAADC_EVT_DONE: {
             int16_t* raw_data = (int16_t*)(p_event->data.done.p_buffer);
 
-            LOG_INF("Sample: %d", (int)raw_data[0]);
-
             for (int i = 0; i < (SAADC_BUFFER_SIZE / 2); i++) {
-                uint16_t sample1 = (uint16_t)raw_data[i * 2] & 0x0FFF;
-                uint16_t sample2 = (uint16_t)raw_data[(i * 2) + 1] & 0x0FFF;
+                if (byte_fill_count == 0) {
+                    current_tx_packet.sample_index = global_sample_counter;
+                }
+
+                int16_t raw1 = raw_data[i * 2];
+                int16_t raw2 = raw_data[(i * 2) + 1];
+                if (raw1 < 0) raw1 = 0;
+                if (raw2 < 0) raw2 = 0;
+
+                uint16_t sample1 = (uint16_t)raw1 & 0x0FFF;
+                uint16_t sample2 = (uint16_t)raw2 & 0x0FFF;
 
                 current_tx_packet.packed_data[byte_fill_count++] =
                     sample1 & 0xFF;
@@ -55,16 +58,15 @@ static void saadc_event_handler(nrfx_saadc_evt_t const* p_event) {
                 current_tx_packet.packed_data[byte_fill_count++] =
                     (sample2 >> 4) & 0xFF;
 
+                global_sample_counter++;
+
                 if (byte_fill_count >= PACKED_BUFFER_SIZE) {
-                    current_tx_packet.sample_index = global_sample_counter;
                     err = k_msgq_put(&ble_data_queue, &current_tx_packet,
                                      K_NO_WAIT);
                     if (err != 0) {
-                        LOG_ERR("k_msgq_put error: %08x", err);
-                        return;
+                        LOG_WRN("k_msgq_put dropped packet: %d", err);
                     }
                     byte_fill_count = 0;
-                    global_sample_counter += (SAADC_BUFFER_SIZE / 2);
                 }
             }
             break;
@@ -80,6 +82,7 @@ void configure_saadc(void) {
 
     IRQ_CONNECT(NRFX_IRQ_NUMBER_GET(NRF_SAADC), IRQ_PRIO_LOWEST,
                 nrfx_saadc_irq_handler, 0, 0);
+
     err = nrfx_saadc_init(NRFX_SAADC_DEFAULT_CONFIG_IRQ_PRIORITY);
     if (err != 0) {
         LOG_ERR("nrfx_saadc_init error: %08x", err);
@@ -87,7 +90,10 @@ void configure_saadc(void) {
     }
 
     channels[0].channel_config.gain = NRF_SAADC_GAIN1_4;
+    channels[0].channel_config.acq_time = NRF_SAADC_ACQTIME_MAX;
     channels[1].channel_config.gain = NRF_SAADC_GAIN1_4;
+    channels[1].channel_config.acq_time = NRF_SAADC_ACQTIME_MAX;
+
     err = nrfx_saadc_channels_config(channels, 2);
     if (err != 0) {
         LOG_ERR("nrfx_saadc_channels_config error: %08x", err);

@@ -1129,20 +1129,6 @@ nvic: &cpuapp_nvic {};
 &uicr {
  nfct-pins-as-gpios;
 };
-
-&clock {
- status = "okay";
-};
-
-&lfxo {
- status = "okay";
- load-capacitors = "external";
-};
-
-&hfxo {
- status = "okay";
- load-capacitors = "external";
-};
 # 0 "<command-line>" 2
 # 1 "./gpio_test.overlay" 1
 

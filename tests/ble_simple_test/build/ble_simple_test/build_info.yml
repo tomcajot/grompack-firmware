@@ -1,0 +1,57 @@
+cmake:
+  application:
+    configuration-dir: '/Users/tomcajot/Desktop/bap/grompack-firmware/tests/ble_simple_test'
+    source-dir: '/Users/tomcajot/Desktop/bap/grompack-firmware/tests/ble_simple_test'
+  board:
+    name: 'gromboard-minewsemi'
+    path:
+     - '/Users/tomcajot/Desktop/bap/grompack-firmware/boards/Team_Kakkerlak/gromboard-minewsemi'
+    qualifiers: 'nrf54l15/cpuapp'
+    revision: ''
+  devicetree:
+    bindings-dirs:
+     - '/opt/nordic/ncs/v3.3.0/nrf/dts/bindings'
+     - '/opt/nordic/ncs/v3.3.0/zephyr/dts/bindings'
+    files:
+     - '/Users/tomcajot/Desktop/bap/grompack-firmware/boards/Team_Kakkerlak/gromboard-minewsemi/gromboard-minewsemi_nrf54l15_cpuapp.dts'
+     - 'ble_simple_test.overlay'
+    include-dirs:
+     - '/opt/nordic/ncs/v3.3.0/nrf/include'
+     - '/opt/nordic/ncs/v3.3.0/nrf/dts/common'
+     - '/opt/nordic/ncs/v3.3.0/nrf/dts/riscv'
+     - '/opt/nordic/ncs/v3.3.0/nrf/dts/arm'
+     - '/opt/nordic/ncs/v3.3.0/nrf/dts'
+     - '/opt/nordic/ncs/v3.3.0/zephyr/include'
+     - '/opt/nordic/ncs/v3.3.0/zephyr/include/zephyr'
+     - '/opt/nordic/ncs/v3.3.0/zephyr/dts/common'
+     - '/opt/nordic/ncs/v3.3.0/zephyr/dts/vendor'
+     - '/opt/nordic/ncs/v3.3.0/zephyr/dts/rx'
+     - '/opt/nordic/ncs/v3.3.0/zephyr/dts/x86'
+     - '/opt/nordic/ncs/v3.3.0/zephyr/dts/xtensa'
+     - '/opt/nordic/ncs/v3.3.0/zephyr/dts/sparc'
+     - '/opt/nordic/ncs/v3.3.0/zephyr/dts/riscv'
+     - '/opt/nordic/ncs/v3.3.0/zephyr/dts/posix'
+     - '/opt/nordic/ncs/v3.3.0/zephyr/dts/arm64'
+     - '/opt/nordic/ncs/v3.3.0/zephyr/dts/arm'
+     - '/opt/nordic/ncs/v3.3.0/zephyr/dts/arc'
+     - '/opt/nordic/ncs/v3.3.0/zephyr/dts'
+    user-files:
+     - 'ble_simple_test.overlay'
+  kconfig:
+    files:
+     - '/Users/tomcajot/Desktop/bap/grompack-firmware/boards/Team_Kakkerlak/gromboard-minewsemi/gromboard-minewsemi_nrf54l15_cpuapp_defconfig'
+     - '/Users/tomcajot/Desktop/bap/grompack-firmware/tests/ble_simple_test/prj.conf'
+     - '/Users/tomcajot/Desktop/bap/grompack-firmware/tests/ble_simple_test/build/ble_simple_test/zephyr/misc/generated/extra_kconfig_options.conf'
+     - '/Users/tomcajot/Desktop/bap/grompack-firmware/tests/ble_simple_test/build/ble_simple_test/zephyr/.config.sysbuild'
+    user-files:
+     - 'prj.conf'
+  toolchain:
+    name: 'zephyr'
+    path: '/opt/nordic/ncs/toolchains/0c0f19d91c/opt/zephyr-sdk'
+  vendor-specific:
+    nordic:
+      svdfile: '/opt/nordic/ncs/v3.3.0/modules/hal/nordic/nrfx/bsp/stable/mdk/nrf54l15_application.svd'
+  zephyr:
+    version: '4.3.99'
+    zephyr-base: '/opt/nordic/ncs/v3.3.0/zephyr'
+version: '0.1.0'

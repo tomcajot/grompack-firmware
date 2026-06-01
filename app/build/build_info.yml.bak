@@ -1,0 +1,22 @@
+cmake:
+  board:
+    name: 'gromboard-minewsemi'
+    path:
+     - '/Users/tomcajot/Desktop/bap/grompack-firmware/boards/Team_Kakkerlak/gromboard-minewsemi'
+    qualifiers: 'nrf54l15/cpuapp'
+    revision: ''
+  images:
+   - name: 'app'
+     source-dir: '/Users/tomcajot/Desktop/bap/grompack-firmware/app'
+     type: 'MAIN'
+  kconfig:
+    files:
+     - '/Users/tomcajot/Desktop/bap/grompack-firmware/app/build/_sysbuild/empty.conf'
+     - '/Users/tomcajot/Desktop/bap/grompack-firmware/app/build/_sysbuild/empty.conf'
+    user-files:
+     - '/Users/tomcajot/Desktop/bap/grompack-firmware/app/build/_sysbuild/empty.conf'
+version: '0.1.0'
+west:
+  command: '/opt/nordic/ncs/toolchains/0c0f19d91c/bin/west build --build-dir /Users/tomcajot/Desktop/bap/grompack-firmware/app/build /Users/tomcajot/Desktop/bap/grompack-firmware/app --pristine --board gromboard-minewsemi/nrf54l15/cpuapp -- -DCONFIG_DEBUG_THREAD_INFO=y -DCONF_FILE=prj.conf -DDTC_OVERLAY_FILE=app.overlay -DBOARD_ROOT=/Users/tomcajot/Desktop/bap/grompack-firmware'
+  topdir: '/opt/nordic/ncs/v3.3.0'
+  version: '1.5.0'

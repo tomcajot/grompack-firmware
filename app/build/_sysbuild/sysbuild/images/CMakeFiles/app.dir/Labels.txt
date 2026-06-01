@@ -1,0 +1,13 @@
+# Target labels
+ app
+# Source files and their labels
+/Users/tomcajot/Desktop/bap/grompack-firmware/app/build/_sysbuild/sysbuild/images/CMakeFiles/app
+/Users/tomcajot/Desktop/bap/grompack-firmware/app/build/_sysbuild/sysbuild/images/CMakeFiles/app.rule
+/Users/tomcajot/Desktop/bap/grompack-firmware/app/build/_sysbuild/sysbuild/images/CMakeFiles/app-complete.rule
+/Users/tomcajot/Desktop/bap/grompack-firmware/app/build/_sysbuild/sysbuild/images/app-prefix/src/app-stamp/app-build.rule
+/Users/tomcajot/Desktop/bap/grompack-firmware/app/build/_sysbuild/sysbuild/images/app-prefix/src/app-stamp/app-configure.rule
+/Users/tomcajot/Desktop/bap/grompack-firmware/app/build/_sysbuild/sysbuild/images/app-prefix/src/app-stamp/app-download.rule
+/Users/tomcajot/Desktop/bap/grompack-firmware/app/build/_sysbuild/sysbuild/images/app-prefix/src/app-stamp/app-install.rule
+/Users/tomcajot/Desktop/bap/grompack-firmware/app/build/_sysbuild/sysbuild/images/app-prefix/src/app-stamp/app-mkdir.rule
+/Users/tomcajot/Desktop/bap/grompack-firmware/app/build/_sysbuild/sysbuild/images/app-prefix/src/app-stamp/app-patch.rule
+/Users/tomcajot/Desktop/bap/grompack-firmware/app/build/_sysbuild/sysbuild/images/app-prefix/src/app-stamp/app-update.rule

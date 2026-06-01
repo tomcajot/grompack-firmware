@@ -57,8 +57,6 @@
 			compatible = "nordic,nrf54l-lfxo"; /* in zephyr/dts/vendor/nordic/nrf54l_05_10_15.dtsi:60 */
 			#clock-cells = < 0x0 >;            /* in zephyr/dts/vendor/nordic/nrf54l_05_10_15.dtsi:61 */
 			clock-frequency = < 0x8000 >;      /* in zephyr/dts/vendor/nordic/nrf54l_05_10_15.dtsi:62 */
-			status = "okay";                   /* in ../../../../Users/tomcajot/Desktop/bap/grompack-firmware/boards/Team_Kakkerlak/gromboard-minewsemi/gromboard-minewsemi_nrf54l15_cpuapp.dts:66 */
-			load-capacitors = "external";      /* in ../../../../Users/tomcajot/Desktop/bap/grompack-firmware/boards/Team_Kakkerlak/gromboard-minewsemi/gromboard-minewsemi_nrf54l15_cpuapp.dts:67 */
 			phandle = < 0x5 >;                 /* in zephyr/dts/vendor/nordic/nrf54l_05_10_15.dtsi:595 */
 		};
 
@@ -68,8 +66,6 @@
 			#clock-cells = < 0x0 >;            /* in zephyr/dts/vendor/nordic/nrf54l_05_10_15.dtsi:67 */
 			clock-frequency = < 0x1e84800 >;   /* in zephyr/dts/vendor/nordic/nrf54l_05_10_15.dtsi:68 */
 			startup-time-us = < 0x672 >;       /* in zephyr/dts/vendor/nordic/nrf54l_05_10_15.dtsi:69 */
-			status = "okay";                   /* in ../../../../Users/tomcajot/Desktop/bap/grompack-firmware/boards/Team_Kakkerlak/gromboard-minewsemi/gromboard-minewsemi_nrf54l15_cpuapp.dts:71 */
-			load-capacitors = "external";      /* in ../../../../Users/tomcajot/Desktop/bap/grompack-firmware/boards/Team_Kakkerlak/gromboard-minewsemi/gromboard-minewsemi_nrf54l15_cpuapp.dts:72 */
 			phandle = < 0x3 >;                 /* in zephyr/dts/vendor/nordic/nrf54l_05_10_15.dtsi:242 */
 		};
 
@@ -711,7 +707,7 @@
 				compatible = "nordic,nrf-clock"; /* in zephyr/dts/vendor/nordic/nrf54l_05_10_15.dtsi:657 */
 				reg = < 0x10e000 0x1000 >;       /* in zephyr/dts/vendor/nordic/nrf54l_05_10_15.dtsi:658 */
 				interrupts = < 0x105 0x1 >;      /* in zephyr/dts/vendor/nordic/nrf54l_05_10_15.dtsi:659 */
-				status = "okay";                 /* in ../../../../Users/tomcajot/Desktop/bap/grompack-firmware/boards/Team_Kakkerlak/gromboard-minewsemi/gromboard-minewsemi_nrf54l15_cpuapp.dts:62 */
+				status = "disabled";             /* in zephyr/dts/vendor/nordic/nrf54l_05_10_15.dtsi:660 */
 			};
 
 			/* node '/soc/peripheral@50000000/power@10e000' defined in zephyr/dts/vendor/nordic/nrf54l_05_10_15.dtsi:663 */
