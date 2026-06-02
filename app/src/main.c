@@ -5,7 +5,7 @@
 
 LOG_MODULE_REGISTER(grompack_logger, LOG_LEVEL_DBG);
 
-//K_MSGQ_DEFINE(ble_data_queue, sizeof(struct neural_packet), 10, 4);
+// K_MSGQ_DEFINE(ble_data_queue, sizeof(struct neural_packet), 10, 4);
 
 K_MEM_SLAB_DEFINE(ble_payload_slab, sizeof(struct neural_packet), 10, 4);
 
@@ -13,7 +13,7 @@ K_FIFO_DEFINE(ble_pointer_fifo);
 
 K_MSGQ_DEFINE(command_queue, sizeof(uint8_t), 10, 4);
 
-void command_thread_entry(void *param1, void *param2, void *param3) {
+void command_thread_entry(void* param1, void* param2, void* param3) {
     ARG_UNUSED(param1);
     ARG_UNUSED(param2);
     ARG_UNUSED(param3);
@@ -33,7 +33,8 @@ void command_thread_entry(void *param1, void *param2, void *param3) {
                     stop_hardware_pipeline();
                     break;
                 default:
-                    LOG_WRN("Unknown command received: 0x%02x", incoming_command);
+                    LOG_WRN("Unknown command received: 0x%02x",
+                            incoming_command);
             }
         }
     }
@@ -50,26 +51,28 @@ int main(void) {
     configure_ppi();
     configure_ble();
 
-    struct neural_packet *tx_packet;
+    struct neural_packet* tx_packet;
 
     while (1) {
-
         tx_packet = k_fifo_get(&ble_pointer_fifo, K_FOREVER);
-        
-        if (is_laptop_subscribed) {
-            err =
-                bt_nus_send(NULL, (uint8_t*)&tx_packet->sample_index, sizeof(uint32_t) + PACKED_BUFFER_SIZE);
 
-            if (err){
+        if (is_laptop_subscribed) {
+            err = bt_nus_send(NULL, (uint8_t*)&tx_packet->sample_index,
+                              sizeof(uint32_t) + PACKED_BUFFER_SIZE);
+
+            if (err) {
                 if (err == -ENOMEM) {
-                    LOG_WRN("Buffer full, dropping packet with index: %u", tx_packet->sample_index);
+                    LOG_WRN("Buffer full, dropping packet with index: %u",
+                            tx_packet->sample_index);
                 } else if (err != -EAGAIN && err != -ENOTCONN) {
                     LOG_ERR("Transmission error: %d", err);
                 }
             } else {
-                LOG_INF("Laptop not subscribed, skipping transmission.");
+                LOG_INF("Transmitting.");
             }
+        } else {
+            LOG_INF("Laptop not subscribed, skipping transmission.");
         }
-        k_mem_slab_free(&ble_payload_slab, (void *)tx_packet);
+        k_mem_slab_free(&ble_payload_slab, (void*)tx_packet);
     }
 }

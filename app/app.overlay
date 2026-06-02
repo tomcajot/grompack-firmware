@@ -1,1 +1,12 @@
-// todo drive selection pin for chain & setup PWM
+#include <zephyr/dt-bindings/gpio/gpio.h>
+
+/ {
+    module_gpios {
+        compatible = "gpio-leds";
+        rec_stim_sw: rec_stim_sw { gpios = <&gpio1 2 GPIO_ACTIVE_HIGH>; label = "P1.02"; };
+    };
+};
+
+
+&gpiote10 {status = "okay";};
+&gpio1 { status = "okay"; };
