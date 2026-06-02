@@ -10,6 +10,14 @@ static struct neural_packet *current_tx_packet = NULL;
 static uint16_t byte_fill_count = 0;
 static uint32_t global_sample_counter = 0;
 
+static nrfx_saadc_channel_t channels[2] = {
+    NRFX_SAADC_DEFAULT_CHANNEL_SE(SAADC_INPUT_PIN_0, 0),
+    NRFX_SAADC_DEFAULT_CHANNEL_SE(SAADC_INPUT_PIN_1, 1)};
+
+static int16_t saadc_sample_buffer[2][SAADC_BUFFER_SIZE];
+
+static uint32_t saadc_current_buffer = 0;
+
 void purge_pipeline(void) {
     
     if (current_tx_packet != NULL) {
@@ -49,14 +57,6 @@ void start_hardware_pipeline(void) {
 
     nrfx_timer_enable(&timer_instance);
 }
-
-static nrfx_saadc_channel_t channels[2] = {
-    NRFX_SAADC_DEFAULT_CHANNEL_SE(SAADC_INPUT_PIN_0, 0),
-    NRFX_SAADC_DEFAULT_CHANNEL_SE(SAADC_INPUT_PIN_1, 1)};
-
-static int16_t saadc_sample_buffer[2][SAADC_BUFFER_SIZE];
-
-static uint32_t saadc_current_buffer = 0;
 
 static void saadc_event_handler(nrfx_saadc_evt_t const* p_event) {
     int err;

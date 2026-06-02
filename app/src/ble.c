@@ -86,7 +86,7 @@ static void on_connected(struct bt_conn* conn, uint8_t err) {
         LOG_ERR("Connection failed, err 0x%02x", err);
         return;
     }
-    LOG_INF("Connected!", err);
+    LOG_INF("Connected! 0x%02x", err);
 
     bt_conn_le_data_len_update(conn, BT_LE_DATA_LEN_PARAM_MAX);
     bt_conn_le_phy_update(conn, BT_CONN_LE_PHY_PARAM_2M);

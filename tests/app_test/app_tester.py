@@ -68,8 +68,20 @@ async def ble_task() -> None:
 
         print(f"Using TX char at handle {tx_char.handle}")
         await client.start_notify(tx_char, on_notify)
+
+        #simulate start command. delete!!!
+        print("Sending START command (0x01) to hardware...")
+        await client.write_gatt_char(NUS_RX_CHAR_UUID, b'\x01')
+
         print("Subscribed. Streaming … (Ctrl+C to stop)\n")
-        await asyncio.Future()
+        try:
+            await asyncio.Future()
+        except asyncio.CancelledError:
+
+            print("\nSending STOP command (0x02) to hardware...")
+            await client.write_gatt_char(NUS_RX_CHAR_UUID, b'\x02')
+
+            await asyncio.sleep(0.1)
 
 if __name__ == "__main__":
     try:
