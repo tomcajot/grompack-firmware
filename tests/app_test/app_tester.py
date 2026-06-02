@@ -78,16 +78,33 @@ async def ble_task() -> None:
         print(f"Using TX char at handle {tx_char.handle}")
         await client.start_notify(tx_char, on_notify)
 
-        #simulate start command. delete!!!
-        print("Sending START command (0x01) to hardware...")
-        await client.write_gatt_char(rx_char, b'\x01')
+        #simulate start/stop command test. delete!!!
+        print("start pipeline test")
 
-        print("Subscribed. Streaming … (Ctrl+C to stop)\n")
         try:
-            await asyncio.Future()
+
+            print("Sending first START command (0x01) to hardware...")
+            await client.write_gatt_char(rx_char, b'\x01')
+            await asyncio.sleep(10)
+
+            print("Subscribed. Streaming for ten seconds")
+
+            print("sending stop command (0x02) to hardware... stopping for ten seconds")
+            await client.write_gatt_char(rx_char, b'\x02')
+            await asyncio.sleep(10)
+
+            print("Sending second START command (0x01) to hardware. check packet index is back to zero")
+            await client.write_gatt_char(rx_char, b'\x01')
+            await asyncio.sleep(10)
+
+            print("Test complete. Stopping stream.")
+            await client.write_gatt_char(rx_char, b'\x02')
+
+            await asyncio.sleep(0.1)
+        
         except asyncio.CancelledError:
 
-            print("\nSending STOP command (0x02) to hardware...")
+            print("\nCtrl+C pressed. Sending STOP command (0x02) to hardware...")
             await client.write_gatt_char(rx_char, b'\x02')
 
             await asyncio.sleep(0.1)
