@@ -14,6 +14,8 @@ bool is_laptop_subscribed = false;
 
 extern struct k_msgq command_queue;
 
+static struct k_work adv_work;
+
 static const struct bt_data ad[] = {
     BT_DATA_BYTES(BT_DATA_FLAGS, (BT_LE_AD_GENERAL | BT_LE_AD_NO_BREDR)),
     BT_DATA(BT_DATA_NAME_COMPLETE, DEVICE_NAME, DEVICE_NAME_LEN),
@@ -22,6 +24,16 @@ static const struct bt_data ad[] = {
 static const struct bt_data sd[] = {
     BT_DATA_BYTES(BT_DATA_UUID128_ALL, BT_UUID_NUS_SRV_VAL),
 };
+
+static void adv_work_handler(struct k_work* work) {
+    int err = bt_le_adv_start(BT_LE_ADV_CONN_FAST_1, ad, ARRAY_SIZE(ad), sd,
+                              ARRAY_SIZE(sd));
+    if (err) {
+        LOG_ERR("Failed to restart advertising (err %d)", err);
+    } else {
+        LOG_INF("Advertising successfully restarted.");
+    }
+}
 
 static void notif_enabled(bool enabled, void* ctx) {
     ARG_UNUSED(ctx);
@@ -33,8 +45,6 @@ static void notif_enabled(bool enabled, void* ctx) {
         uint8_t stop_cmd = 0x02;
         k_msgq_put(&command_queue, &stop_cmd, K_NO_WAIT);
     }
-
-    //k_msgq_purge(&ble_data_queue);
 }
 
 static void received(struct bt_conn* conn, const void* data, uint16_t len,
@@ -58,6 +68,8 @@ struct bt_nus_cb nus_listener = {
 
 void configure_ble(void) {
     int err;
+
+    k_work_init(&adv_work, adv_work_handler);
 
     err = bt_enable(NULL);
     if (err) {
@@ -96,16 +108,11 @@ static void on_disconnected(struct bt_conn* conn, uint8_t reason) {
     LOG_INF("Disconnected, reason 0x%02x", reason);
 
     is_laptop_subscribed = false;
-    //k_msgq_purge(&ble_data_queue);
 
     uint8_t stop_cmd = 0x02;
     k_msgq_put(&command_queue, &stop_cmd, K_NO_WAIT);
 
-    int err = bt_le_adv_start(BT_LE_ADV_CONN_FAST_1, ad, ARRAY_SIZE(ad), sd,
-                              ARRAY_SIZE(sd));
-    if (err) {
-        LOG_ERR("Failed to restart advertising (err %d)", err);
-    }
+    k_work_submit(&adv_work);
 }
 
 BT_CONN_CB_DEFINE(conn_callbacks) = {

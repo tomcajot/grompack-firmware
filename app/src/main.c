@@ -5,8 +5,6 @@
 
 LOG_MODULE_REGISTER(grompack_logger, LOG_LEVEL_DBG);
 
-// K_MSGQ_DEFINE(ble_data_queue, sizeof(struct neural_packet), 10, 4);
-
 K_MEM_SLAB_DEFINE(ble_payload_slab, sizeof(struct neural_packet), 10, 4);
 
 K_FIFO_DEFINE(ble_pointer_fifo);
@@ -32,6 +30,14 @@ void command_thread_entry(void* param1, void* param2, void* param3) {
                     LOG_INF("Command 0x02: Stop Data Collection");
                     stop_hardware_pipeline();
                     break;
+                case 0x03:
+                    LOG_INF("turn on pwm");
+                    set_stimulation_state(true);
+                    break;
+                case 0x04:
+                    LOG_INF("turn off pwm");
+                    set_stimulation_state(false);
+                    break;
                 default:
                     LOG_WRN("Unknown command received: 0x%02x",
                             incoming_command);
@@ -46,6 +52,7 @@ K_THREAD_DEFINE(command_thread_id, 1024, command_thread_entry, NULL, NULL, NULL,
 int main(void) {
     int err;
 
+    configure_stimulation();
     configure_timer();
     configure_saadc();
     configure_ppi();
