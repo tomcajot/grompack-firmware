@@ -66,12 +66,21 @@ async def ble_task() -> None:
             print(f"[ERROR] TX characteristic not found")
             return
 
+        rx_char = next(
+            (c for c in nus_service.characteristics
+             if c.uuid.lower() == NUS_RX_CHAR_UUID.lower()),
+            None
+        )
+        if not rx_char:
+            print(f"[ERROR] RX characteristic not found")
+            return
+
         print(f"Using TX char at handle {tx_char.handle}")
         await client.start_notify(tx_char, on_notify)
 
         #simulate start command. delete!!!
         print("Sending START command (0x01) to hardware...")
-        await client.write_gatt_char(NUS_RX_CHAR_UUID, b'\x01')
+        await client.write_gatt_char(rx_char, b'\x01')
 
         print("Subscribed. Streaming … (Ctrl+C to stop)\n")
         try:
@@ -79,7 +88,7 @@ async def ble_task() -> None:
         except asyncio.CancelledError:
 
             print("\nSending STOP command (0x02) to hardware...")
-            await client.write_gatt_char(NUS_RX_CHAR_UUID, b'\x02')
+            await client.write_gatt_char(rx_char, b'\x02')
 
             await asyncio.sleep(0.1)
 
