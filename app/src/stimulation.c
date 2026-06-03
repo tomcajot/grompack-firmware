@@ -24,7 +24,7 @@ static nrf_pwm_sequence_t seq = {.values.p_common = seq_values,
                                  .repeats = 0,
                                  .end_delay = 0};
 
-void set_stimulation_state(bool start_pwm) {
+void set_stimulation_continuous(bool start_pwm) {
     if (start_pwm) {
         nrfx_pwm_simple_playback(&pwm_instance, &seq, 1, NRFX_PWM_FLAG_LOOP);
         LOG_INF("Stimulation PWM Started");
@@ -34,20 +34,15 @@ void set_stimulation_state(bool start_pwm) {
     }
 }
 
-// We keep this if we want a burst type of pwm that stops after some time.
-// then we do need to add:
-// IRQ_CONNECT(NRFX_IRQ_NUMBER_GET(NRF_PWM_INST_GET(PWM_INST_IDX)),
-// IRQ_PRIO_LOWEST, nrfx_pwm_irq_handler, &pwm_instance, 0);
-// and set status back to:
-// err = nrfx_pwm_init(&pwm_instance, &config, pwm_handler, NULL);
-// static void pwm_handler(nrfx_pwm_event_type_t event_type, void* p_context) {
-//     static uint32_t curr_loop = 1;
+void set_stimulation_burst(uint32_t duration_ms, uint32_t frequency_hz) {
+    uint32_t total_cycles = (frequency_hz * duration_ms) / 1000;
 
-//     if (curr_loop != 10000) {
-//         nrfx_pwm_uninit(&pwm_instance);
-//     }
-//     curr_loop++;
-// }
+    LOG_INF("Starting PWM Burst: %u ms at %u Hz (%u cycles)", duration_ms,
+            frequency_hz, total_cycles);
+
+    nrfx_pwm_simple_playback(&pwm_instance, &seq, total_cycles,
+                             NRFX_PWM_FLAG_STOP);
+}
 
 void configure_stimulation(void) {
     int err;
@@ -71,7 +66,10 @@ void configure_stimulation(void) {
         nrf_pin_number, NRF_PWM_PIN_NOT_CONNECTED, NRF_PWM_PIN_NOT_CONNECTED,
         NRF_PWM_PIN_NOT_CONNECTED);
 
-    err = nrfx_pwm_init(&pwm_instance, &config, NULL, NULL);
+    config.base_clock = NRF_PWM_CLK_1MHz;
+    config.top_value = 1000;
+    config.load_mode = NRF_PWM_LOAD_COMMON;
 
-    nrfx_pwm_simple_playback(&pwm_instance, &seq, 1, NRFX_PWM_FLAG_LOOP);
+    err = nrfx_pwm_init(&pwm_instance, &config, NULL, NULL);
+    LOG_INF("PWM init with response: %08x", err);
 }

@@ -40,6 +40,7 @@ void configure_ppi(void);
 void start_hardware_pipeline(void);
 void stop_hardware_pipeline(void);
 void purge_pipeline(void);
-void set_stimulation_state();
+void set_stimulation_continous();
+void set_stimulation_burst();
 
 #endif

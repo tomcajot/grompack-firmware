@@ -31,12 +31,18 @@ void command_thread_entry(void* param1, void* param2, void* param3) {
                     stop_hardware_pipeline();
                     break;
                 case 0x03:
-                    LOG_INF("turn on pwm");
-                    set_stimulation_state(true);
+                    LOG_INF("turn on pwm continuous");
+                    set_stimulation_continous(true);
                     break;
                 case 0x04:
-                    LOG_INF("turn off pwm");
-                    set_stimulation_state(false);
+                    LOG_INF("turn off pwm continous");
+                    set_stimulation_continous(false);
+                    break;
+                case 0x05:
+                    LOG_INF("set pwm burst");
+                    uint32_t time = 3;
+                    uint32_t frequency = 1000;
+                    set_stimulation_burst(time, frequency);
                     break;
                 default:
                     LOG_WRN("Unknown command received: 0x%02x",
