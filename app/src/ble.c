@@ -10,7 +10,7 @@ LOG_MODULE_DECLARE(grompack_logger, LOG_LEVEL_DBG);
 #define DEVICE_NAME CONFIG_BT_DEVICE_NAME
 #define DEVICE_NAME_LEN (sizeof(DEVICE_NAME) - 1)
 
-bool is_laptop_subscribed = false;
+volatile bool is_laptop_subscribed = false;
 
 extern struct k_msgq command_queue;
 
@@ -26,8 +26,9 @@ static const struct bt_data sd[] = {
 };
 
 static void adv_work_handler(struct k_work* work) {
-    int err = bt_le_adv_start(BT_LE_ADV_CONN_FAST_1, ad, ARRAY_SIZE(ad), sd,
-                              ARRAY_SIZE(sd));
+    int err =
+        bt_le_adv_start(BT_LE_ADV_PARAM(BT_LE_ADV_OPT_CONN, 800, 800, NULL), ad,
+                        ARRAY_SIZE(ad), sd, ARRAY_SIZE(sd));
     if (err) {
         LOG_ERR("Failed to restart advertising (err %d)", err);
     } else {

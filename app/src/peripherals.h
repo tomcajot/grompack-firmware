@@ -2,6 +2,7 @@
 #define PERIPHERALS_H
 
 #include <nrfx_timer.h>
+#include <stdbool.h>
 #include <zephyr/bluetooth/services/nus.h>
 #include <zephyr/kernel.h>
 
@@ -37,13 +38,15 @@ struct neural_packet {
 
 extern struct k_fifo ble_pointer_fifo;
 extern struct k_mem_slab ble_payload_slab;
+extern struct k_msgq command_queue;
 
-#include <stdbool.h>
+extern volatile bool is_laptop_subscribed;
 
-extern bool is_laptop_subscribed;
-
+void setup_unused_pins(void);
+void system_off(void);
 void configure_stimulation(void);
 void configure_ble(void);
+void command_thread_entry(void* param1, void* param2, void* param3);
 void configure_timer(void);
 void configure_saadc(void);
 void configure_ppi(void);

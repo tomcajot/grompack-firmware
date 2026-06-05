@@ -28,4 +28,5 @@ void configure_timer(void) {
     nrfx_timer_extended_compare(&timer_instance, NRF_TIMER_CC_CHANNEL0,
                                 timer_ticks,
                                 NRF_TIMER_SHORT_COMPARE0_CLEAR_MASK, false);
+    nrfx_timer_disable(&timer_instance);
 }

@@ -4,4 +4,4 @@ find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
 
 project(grompack_firmware)
 
-target_sources(app PRIVATE src/main.c src/timer.c src/saadc.c src/gppi.c src/ble.c src/stimulation.c)
+target_sources(app PRIVATE src/main.c src/timer.c src/saadc.c src/gppi.c src/ble.c src/stimulation.c src/commands.c src/config.c)

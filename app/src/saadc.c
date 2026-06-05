@@ -38,6 +38,7 @@ void stop_hardware_pipeline(void) {
     LOG_INF("Halting hardware pipeline...");
 
     nrfx_timer_disable(&timer_instance);
+    nrfx_timer_clear(&timer_instance);
 
     k_busy_wait(500);
     nrfx_saadc_abort();
@@ -64,8 +65,6 @@ static void saadc_event_handler(nrfx_saadc_evt_t const* p_event) {
     int err;
     switch (p_event->type) {
         case NRFX_SAADC_EVT_READY:
-            // nrfx_timer_enable(&timer_instance);
-            //
             break;
 
         case NRFX_SAADC_EVT_BUF_REQ:
@@ -132,9 +131,9 @@ void configure_saadc(void) {
     }
 
     channels[0].channel_config.gain = NRF_SAADC_GAIN1_2;
-    channels[0].channel_config.acq_time = NRF54_SAADC_ACQTIME_US(10);
+    channels[0].channel_config.acq_time = NRF54_SAADC_ACQTIME_US(20);
     channels[1].channel_config.gain = NRF_SAADC_GAIN1_2;
-    channels[1].channel_config.acq_time = NRF54_SAADC_ACQTIME_US(10);
+    channels[1].channel_config.acq_time = NRF54_SAADC_ACQTIME_US(20);
 
     err = nrfx_saadc_channels_config(channels, 2);
     if (err != 0) {
