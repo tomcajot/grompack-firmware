@@ -131,9 +131,9 @@ void configure_saadc(void) {
         return;
     }
 
-    channels[0].channel_config.gain = NRF_SAADC_GAIN1_4;
+    channels[0].channel_config.gain = NRF_SAADC_GAIN1_2;
     channels[0].channel_config.acq_time = NRF54_SAADC_ACQTIME_US(10);
-    channels[1].channel_config.gain = NRF_SAADC_GAIN1_4;
+    channels[1].channel_config.gain = NRF_SAADC_GAIN1_2;
     channels[1].channel_config.acq_time = NRF54_SAADC_ACQTIME_US(10);
 
     err = nrfx_saadc_channels_config(channels, 2);

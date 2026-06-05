@@ -11,8 +11,11 @@ LOG_MODULE_DECLARE(grompack_logger, LOG_LEVEL_DBG);
 static const struct gpio_dt_spec rec_stim_sw =
     GPIO_DT_SPEC_GET(DT_NODELABEL(rec_stim_sw), gpios);
 
-static const struct gpio_dt_spec pwm_test_pin =
-    GPIO_DT_SPEC_GET(DT_NODELABEL(pwm_test_pin), gpios);
+static const struct gpio_dt_spec stim_right =
+    GPIO_DT_SPEC_GET(DT_NODELABEL(stim_right), gpios);
+
+static const struct gpio_dt_spec stim_left =
+    GPIO_DT_SPEC_GET(DT_NODELABEL(stim_left), gpios);
 
 static nrfx_pwm_t pwm_instance =
     NRFX_PWM_INSTANCE(NRF_PWM_INST_GET(PWM_INST_IDX));
@@ -51,19 +54,21 @@ void configure_stimulation(void) {
         LOG_INF("REC_STIM_SW GPIO not ready");
     }
 
-    if (!gpio_is_ready_dt(&pwm_test_pin)) {
-        LOG_INF("PWM_TEST_PIN GPIO not ready");
+    if (!gpio_is_ready_dt(&stim_right)) {
+        LOG_INF("stim_left GPIO not ready");
     }
 
-    err = gpio_pin_configure_dt(&rec_stim_sw, GPIO_OUTPUT_LOW);
+    if (!gpio_is_ready_dt(&stim_left)) {
+        LOG_INF("stim_left GPIO not ready");
+    }
+
+    err = gpio_pin_configure_dt(&rec_stim_sw, GPIO_OUTPUT_HIGH);
     if (err < 0) {
         LOG_ERR("REC_STIM_SW GPIO config error (%d)", err);
     }
 
-    uint32_t nrf_pin_number = 32 + pwm_test_pin.pin;
-
     nrfx_pwm_config_t config = NRFX_PWM_DEFAULT_CONFIG(
-        nrf_pin_number, NRF_PWM_PIN_NOT_CONNECTED, NRF_PWM_PIN_NOT_CONNECTED,
+        STIM_LEFT_ABS_PIN, STIM_RIGHT_ABS_PIN, NRF_PWM_PIN_NOT_CONNECTED,
         NRF_PWM_PIN_NOT_CONNECTED);
 
     config.base_clock = NRF_PWM_CLK_1MHz;

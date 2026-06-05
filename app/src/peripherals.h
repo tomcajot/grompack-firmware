@@ -15,6 +15,18 @@
 #define PWM_INST_IDX 20
 #define NRF54_SAADC_ACQTIME_US(us) (((us * 1000) / 125) - 1)
 
+#define STIM_LEFT_NODE DT_NODELABEL(stim_left)
+#define STIM_LEFT_PORT DT_PROP(DT_GPIO_CTLR(STIM_LEFT_NODE, gpios), port)
+#define STIM_LEFT_PIN DT_GPIO_PIN(STIM_LEFT_NODE, gpios)
+
+#define STIM_LEFT_ABS_PIN ((STIM_LEFT_PORT * 32) + STIM_LEFT_PIN)
+
+#define STIM_RIGHT_NODE DT_NODELABEL(stim_right)
+#define STIM_RIGHT_PORT DT_PROP(DT_GPIO_CTLR(STIM_RIGHT_NODE, gpios), port)
+#define STIM_RIGHT_PIN DT_GPIO_PIN(STIM_RIGHT_NODE, gpios)
+
+#define STIM_RIGHT_ABS_PIN ((STIM_RIGHT_PORT * 32) + STIM_RIGHT_PIN)
+
 extern nrfx_timer_t timer_instance;
 
 struct neural_packet {
@@ -23,7 +35,6 @@ struct neural_packet {
     uint8_t packed_data[PACKED_BUFFER_SIZE];
 } __packed;
 
-// extern struct k_msgq ble_data_queue;
 extern struct k_fifo ble_pointer_fifo;
 extern struct k_mem_slab ble_payload_slab;
 
