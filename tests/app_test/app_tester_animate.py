@@ -97,7 +97,8 @@ async def ble_task() -> None:
         await client.start_notify(tx_char, on_notify)
 
 
-        await client.write_gatt_char(rx_char, b'\x01')
+        # await client.write_gatt_char(rx_char, b'\x01')
+        await client.write_gatt_char(rx_char, b'\x03')
         
         while is_running:
             await asyncio.sleep(0.1)
@@ -125,12 +126,12 @@ if __name__ == "__main__":
 
     def update(frame):
         ch1_list = list(ch1_data)
-        ch2_list = list(ch2_data)
+        # ch2_list = list(ch2_data)
 
         if ch1_list:
             line1.set_data(range(len(ch1_list)), ch1_list)
-        if ch2_list:
-            line2.set_data(range(len(ch2_list)), ch2_list)
+        # if ch2_list:
+            # line2.set_data(range(len(ch2_list)), ch2_list)
 
         ax.relim()
         ax.autoscale_view(scalex=False, scaley=True)
