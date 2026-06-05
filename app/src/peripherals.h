@@ -30,9 +30,8 @@ extern struct k_mem_slab ble_payload_slab;
 #include <stdbool.h>
 
 extern bool is_laptop_subscribed;
-// extern bool start_pwm = false;
 
-// void configure_stimulation(void);
+void configure_stimulation(void);
 void configure_ble(void);
 void configure_timer(void);
 void configure_saadc(void);
@@ -40,7 +39,7 @@ void configure_ppi(void);
 void start_hardware_pipeline(void);
 void stop_hardware_pipeline(void);
 void purge_pipeline(void);
-// void set_stimulation_continous();
-// void set_stimulation_burst();
+void set_stimulation_continuous(bool start_pwm);
+void set_stimulation_burst(uint32_t duration_ms, uint32_t frequency_hz);
 
 #endif

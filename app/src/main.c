@@ -32,17 +32,17 @@ void command_thread_entry(void* param1, void* param2, void* param3) {
                     break;
                 case 0x03:
                     LOG_INF("turn on pwm continuous");
-                    // set_stimulation_continous(true);
+                    set_stimulation_continuous(true);
                     break;
                 case 0x04:
                     LOG_INF("turn off pwm continous");
-                    // set_stimulation_continous(false);
+                    set_stimulation_continuous(false);
                     break;
                 case 0x05:
                     LOG_INF("set pwm burst");
                     uint32_t time = 3;
                     uint32_t frequency = 1000;
-                    // set_stimulation_burst(time, frequency);
+                    set_stimulation_burst(time, frequency);
                     break;
                 default:
                     LOG_WRN("Unknown command received: 0x%02x",
@@ -58,7 +58,7 @@ K_THREAD_DEFINE(command_thread_id, 1024, command_thread_entry, NULL, NULL, NULL,
 int main(void) {
     int err;
 
-    // configure_stimulation();
+    configure_stimulation();
     configure_timer();
     configure_saadc();
     configure_ppi();
