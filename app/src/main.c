@@ -5,7 +5,7 @@
 
 LOG_MODULE_REGISTER(grompack_logger, LOG_LEVEL_DBG);
 
-K_MEM_SLAB_DEFINE(ble_payload_slab, sizeof(struct neural_packet), 10, 4);
+K_MEM_SLAB_DEFINE(ble_payload_slab, sizeof(struct neural_packet), 40, 4);
 
 K_FIFO_DEFINE(ble_pointer_fifo);
 
@@ -32,17 +32,17 @@ void command_thread_entry(void* param1, void* param2, void* param3) {
                     break;
                 case 0x03:
                     LOG_INF("turn on pwm continuous");
-                    set_stimulation_continous(true);
+                    // set_stimulation_continous(true);
                     break;
                 case 0x04:
                     LOG_INF("turn off pwm continous");
-                    set_stimulation_continous(false);
+                    // set_stimulation_continous(false);
                     break;
                 case 0x05:
                     LOG_INF("set pwm burst");
                     uint32_t time = 3;
                     uint32_t frequency = 1000;
-                    set_stimulation_burst(time, frequency);
+                    // set_stimulation_burst(time, frequency);
                     break;
                 default:
                     LOG_WRN("Unknown command received: 0x%02x",
@@ -58,7 +58,7 @@ K_THREAD_DEFINE(command_thread_id, 1024, command_thread_entry, NULL, NULL, NULL,
 int main(void) {
     int err;
 
-    configure_stimulation();
+    // configure_stimulation();
     configure_timer();
     configure_saadc();
     configure_ppi();
@@ -75,16 +75,16 @@ int main(void) {
 
             if (err) {
                 if (err == -ENOMEM) {
-                    LOG_WRN("Buffer full, dropping packet with index: %u",
-                            tx_packet->sample_index);
+                    // LOG_WRN("Buffer full, dropping packet with index: %u",
+                    // tx_packet->sample_index);
                 } else if (err != -EAGAIN && err != -ENOTCONN) {
-                    LOG_ERR("Transmission error: %d", err);
+                    // LOG_ERR("Transmission error: %d", err);
                 }
             } else {
-                LOG_INF("Transmitting.");
+                // LOG_INF("Transmitting.");
             }
         } else {
-            LOG_INF("Laptop not subscribed, skipping transmission.");
+            // LOG_INF("Laptop not subscribed, skipping transmission.");
         }
         k_mem_slab_free(&ble_payload_slab, (void*)tx_packet);
     }

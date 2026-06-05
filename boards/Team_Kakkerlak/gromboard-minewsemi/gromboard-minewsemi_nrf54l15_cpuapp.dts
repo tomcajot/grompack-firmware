@@ -73,3 +73,7 @@
     load-capacitors = "internal";
     load-capacitance-femtofarad = <7000>;
 };
+
+&vregmain {
+    regulator-initial-mode = <NRF5X_REG_MODE_DCDC>;
+};

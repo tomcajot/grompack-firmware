@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import time
 import asyncio
 import struct
 import threading
@@ -24,6 +25,7 @@ ch1_data = deque(maxlen=MAX_POINTS)
 ch2_data = deque(maxlen=MAX_POINTS)
 
 is_running = True
+delays = []
 
 def on_notify(_handle: int, data: bytearray) -> None:
     if len(data) < PACKET_SIZE:
@@ -46,6 +48,7 @@ def on_notify(_handle: int, data: bytearray) -> None:
 
     ch1_data.extend(ch1)
     ch2_data.extend(ch2)
+    delays.append(time.time())
 
 async def ble_task() -> None:
     global is_running
@@ -59,6 +62,11 @@ async def ble_task() -> None:
     print(f"Found {device.name} [{device.address}] — connecting …")
 
     async with BleakClient(device) as client:
+        for svc in client.services:
+            print(f"  Service: {svc.uuid}")
+            for ch in svc.characteristics:
+                print(f"    Char: {ch.uuid}  handle={ch.handle}  props={ch.properties}")
+
         nus_service = next(
             (s for s in client.services if s.uuid.lower() == NUS_SERVICE_UUID.lower()),
             None
@@ -76,9 +84,20 @@ async def ble_task() -> None:
             print(f"[ERROR] TX characteristic not found")
             return
 
+        rx_char = next(
+            (c for c in nus_service.characteristics
+             if c.uuid.lower() == NUS_RX_CHAR_UUID.lower()),
+            None
+        )
+        if not rx_char:
+            print(f"[ERROR] RX characteristic not found")
+            return
+
         print(f"Using TX char at handle {tx_char.handle}")
         await client.start_notify(tx_char, on_notify)
-        print("Subscribed. Streaming … (Close the plot window to stop)\n")
+
+
+        await client.write_gatt_char(rx_char, b'\x01')
         
         while is_running:
             await asyncio.sleep(0.1)

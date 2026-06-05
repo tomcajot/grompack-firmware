@@ -186,9 +186,6 @@
 /Users/tomcajot/Desktop/bap/grompack-firmware/tests/adc_double_test/build/adc_double_test/zephyr/drivers/clock_control/CMakeFiles/drivers__clock_control.dir
 /Users/tomcajot/Desktop/bap/grompack-firmware/tests/adc_double_test/build/adc_double_test/zephyr/drivers/clock_control/CMakeFiles/edit_cache.dir
 /Users/tomcajot/Desktop/bap/grompack-firmware/tests/adc_double_test/build/adc_double_test/zephyr/drivers/clock_control/CMakeFiles/rebuild_cache.dir
-/Users/tomcajot/Desktop/bap/grompack-firmware/tests/adc_double_test/build/adc_double_test/zephyr/drivers/console/CMakeFiles/drivers__console.dir
-/Users/tomcajot/Desktop/bap/grompack-firmware/tests/adc_double_test/build/adc_double_test/zephyr/drivers/console/CMakeFiles/edit_cache.dir
-/Users/tomcajot/Desktop/bap/grompack-firmware/tests/adc_double_test/build/adc_double_test/zephyr/drivers/console/CMakeFiles/rebuild_cache.dir
 /Users/tomcajot/Desktop/bap/grompack-firmware/tests/adc_double_test/build/adc_double_test/zephyr/drivers/gpio/CMakeFiles/drivers__gpio.dir
 /Users/tomcajot/Desktop/bap/grompack-firmware/tests/adc_double_test/build/adc_double_test/zephyr/drivers/gpio/CMakeFiles/edit_cache.dir
 /Users/tomcajot/Desktop/bap/grompack-firmware/tests/adc_double_test/build/adc_double_test/zephyr/drivers/gpio/CMakeFiles/rebuild_cache.dir
@@ -373,7 +370,6 @@
 /Users/tomcajot/Desktop/bap/grompack-firmware/tests/adc_double_test/build/adc_double_test/modules/percepio/CMakeFiles/rebuild_cache.dir
 /Users/tomcajot/Desktop/bap/grompack-firmware/tests/adc_double_test/build/adc_double_test/modules/picolibc/CMakeFiles/edit_cache.dir
 /Users/tomcajot/Desktop/bap/grompack-firmware/tests/adc_double_test/build/adc_double_test/modules/picolibc/CMakeFiles/rebuild_cache.dir
-/Users/tomcajot/Desktop/bap/grompack-firmware/tests/adc_double_test/build/adc_double_test/modules/segger/CMakeFiles/modules__segger.dir
 /Users/tomcajot/Desktop/bap/grompack-firmware/tests/adc_double_test/build/adc_double_test/modules/segger/CMakeFiles/edit_cache.dir
 /Users/tomcajot/Desktop/bap/grompack-firmware/tests/adc_double_test/build/adc_double_test/modules/segger/CMakeFiles/rebuild_cache.dir
 /Users/tomcajot/Desktop/bap/grompack-firmware/tests/adc_double_test/build/adc_double_test/modules/uoscore-uedhoc/CMakeFiles/edit_cache.dir

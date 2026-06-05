@@ -97,7 +97,6 @@ async def ble_task() -> None:
         print("   Press 'x' to STOP  (0x02)")
         print(" Close the plot window to exit.")
         print("="*50 + "\n")
-        
         while is_running:
             while not command_queue.empty():
                 cmd = command_queue.get()
@@ -130,7 +129,7 @@ if __name__ == "__main__":
     ble_thread.start()
 
     fig, ax = plt.subplots()
-    fig.canvas.mpl_connect('key_press_event', on_key_press) # Bind key presses
+    fig.canvas.mpl_connect('key_press_event', on_key_press)
 
     line1, = ax.plot([], [], lw=1.5, label="CH1")
     line2, = ax.plot([], [], lw=1.5, label="CH2", color='orange')

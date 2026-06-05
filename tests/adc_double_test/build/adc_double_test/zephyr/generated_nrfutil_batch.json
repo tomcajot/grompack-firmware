@@ -5,7 +5,7 @@
     {
       "core": "NRFDL_DEVICE_CORE_APPLICATION",
       "operation": {
-        "chip_erase_mode": "ERASE_NONE",
+        "chip_erase_mode": "ERASE_ALL",
         "firmware": {
           "file": "/Users/tomcajot/Desktop/bap/grompack-firmware/tests/adc_double_test/build/adc_double_test/zephyr/zephyr.hex"
         },

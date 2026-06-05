@@ -71,7 +71,6 @@
 		"/Users/tomcajot/Desktop/bap/grompack-firmware/tests/adc_double_test/build/adc_double_test/zephyr/drivers/usb_c/cmake_install.cmake",
 		"/Users/tomcajot/Desktop/bap/grompack-firmware/tests/adc_double_test/build/adc_double_test/zephyr/drivers/cache/cmake_install.cmake",
 		"/Users/tomcajot/Desktop/bap/grompack-firmware/tests/adc_double_test/build/adc_double_test/zephyr/drivers/clock_control/cmake_install.cmake",
-		"/Users/tomcajot/Desktop/bap/grompack-firmware/tests/adc_double_test/build/adc_double_test/zephyr/drivers/console/cmake_install.cmake",
 		"/Users/tomcajot/Desktop/bap/grompack-firmware/tests/adc_double_test/build/adc_double_test/zephyr/drivers/gpio/cmake_install.cmake",
 		"/Users/tomcajot/Desktop/bap/grompack-firmware/tests/adc_double_test/build/adc_double_test/zephyr/drivers/timer/cmake_install.cmake",
 		"/Users/tomcajot/Desktop/bap/grompack-firmware/tests/adc_double_test/build/adc_double_test/modules/nrf/cmake_install.cmake",

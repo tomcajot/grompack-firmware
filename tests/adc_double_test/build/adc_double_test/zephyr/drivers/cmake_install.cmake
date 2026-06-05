@@ -84,11 +84,6 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/Users/tomcajot/Desktop/bap/grompack-firmware/tests/adc_double_test/build/adc_double_test/zephyr/drivers/console/cmake_install.cmake")
-endif()
-
-if(NOT CMAKE_INSTALL_LOCAL_ONLY)
-  # Include the install script for the subdirectory.
   include("/Users/tomcajot/Desktop/bap/grompack-firmware/tests/adc_double_test/build/adc_double_test/zephyr/drivers/gpio/cmake_install.cmake")
 endif()
 

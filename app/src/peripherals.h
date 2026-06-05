@@ -7,13 +7,13 @@
 
 #define PACKED_BUFFER_SIZE 240
 
-// todo change to 80 and check in saadc if acq max still works or adapt.
-#define SAADC_SAMPLE_INTERVAL_US 100
+#define SAADC_SAMPLE_INTERVAL_US 80
 #define SAADC_BUFFER_SIZE 16
 #define SAADC_INPUT_PIN_0 NRFX_ANALOG_EXTERNAL_AIN4
 #define SAADC_INPUT_PIN_1 NRFX_ANALOG_EXTERNAL_AIN5
 #define SAADC_TIMER_INST_IDX 20
 #define PWM_INST_IDX 20
+#define NRF54_SAADC_ACQTIME_US(us) (((us * 1000) / 125) - 1)
 
 extern nrfx_timer_t timer_instance;
 
@@ -30,9 +30,9 @@ extern struct k_mem_slab ble_payload_slab;
 #include <stdbool.h>
 
 extern bool is_laptop_subscribed;
-extern bool start_pwm = false;
+// extern bool start_pwm = false;
 
-void configure_stimulation(void);
+// void configure_stimulation(void);
 void configure_ble(void);
 void configure_timer(void);
 void configure_saadc(void);
@@ -40,7 +40,7 @@ void configure_ppi(void);
 void start_hardware_pipeline(void);
 void stop_hardware_pipeline(void);
 void purge_pipeline(void);
-void set_stimulation_continous();
-void set_stimulation_burst();
+// void set_stimulation_continous();
+// void set_stimulation_burst();
 
 #endif

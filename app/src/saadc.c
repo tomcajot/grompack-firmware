@@ -6,7 +6,7 @@
 
 LOG_MODULE_DECLARE(grompack_logger, LOG_LEVEL_DBG);
 
-static struct neural_packet *current_tx_packet = NULL;
+static struct neural_packet* current_tx_packet = NULL;
 static uint16_t byte_fill_count = 0;
 static uint32_t global_sample_counter = 0;
 
@@ -19,17 +19,16 @@ static int16_t saadc_sample_buffer[2][SAADC_BUFFER_SIZE];
 static uint32_t saadc_current_buffer = 0;
 
 void purge_pipeline(void) {
-    
     if (current_tx_packet != NULL) {
-        k_mem_slab_free(&ble_payload_slab, (void *)current_tx_packet);
+        k_mem_slab_free(&ble_payload_slab, (void*)current_tx_packet);
         current_tx_packet = NULL;
     }
-    
+
     byte_fill_count = 0;
 
-    struct neural_packet *stale_packet;
+    struct neural_packet* stale_packet;
     while ((stale_packet = k_fifo_get(&ble_pointer_fifo, K_NO_WAIT)) != NULL) {
-        k_mem_slab_free(&ble_payload_slab, (void *)stale_packet);
+        k_mem_slab_free(&ble_payload_slab, (void*)stale_packet);
     }
 
     LOG_INF("Pipeline flushed and memory returned to slab.");
@@ -37,10 +36,13 @@ void purge_pipeline(void) {
 
 void stop_hardware_pipeline(void) {
     LOG_INF("Halting hardware pipeline...");
-    
+
     nrfx_timer_disable(&timer_instance);
-    
-    nrfx_saadc_abort(); 
+
+    k_busy_wait(500);
+    nrfx_saadc_abort();
+    k_busy_wait(200);
+
     purge_pipeline();
 }
 
@@ -52,7 +54,7 @@ void start_hardware_pipeline(void) {
 
     nrfx_saadc_buffer_set(saadc_sample_buffer[0], SAADC_BUFFER_SIZE);
     nrfx_saadc_buffer_set(saadc_sample_buffer[1], SAADC_BUFFER_SIZE);
-    
+
     nrfx_saadc_mode_trigger();
 
     nrfx_timer_enable(&timer_instance);
@@ -62,7 +64,7 @@ static void saadc_event_handler(nrfx_saadc_evt_t const* p_event) {
     int err;
     switch (p_event->type) {
         case NRFX_SAADC_EVT_READY:
-            //nrfx_timer_enable(&timer_instance);
+            // nrfx_timer_enable(&timer_instance);
             //
             break;
 
@@ -77,9 +79,10 @@ static void saadc_event_handler(nrfx_saadc_evt_t const* p_event) {
             break;
 
         case NRFX_SAADC_EVT_DONE: {
-
             if (current_tx_packet == NULL) {
-                if (k_mem_slab_alloc(&ble_payload_slab, (void **)&current_tx_packet, K_NO_WAIT) != 0) {
+                if (k_mem_slab_alloc(&ble_payload_slab,
+                                     (void**)&current_tx_packet,
+                                     K_NO_WAIT) != 0) {
                     global_sample_counter += (SAADC_BUFFER_SIZE / 2);
                     break;
                 }
@@ -90,10 +93,9 @@ static void saadc_event_handler(nrfx_saadc_evt_t const* p_event) {
             int16_t* raw_data = (int16_t*)(p_event->data.done.p_buffer);
 
             for (int i = 0; i < (SAADC_BUFFER_SIZE / 2); i++) {
-                
                 uint16_t sample1 = (uint16_t)raw_data[i * 2] & 0x0FFF;
                 uint16_t sample2 = (uint16_t)raw_data[(i * 2) + 1] & 0x0FFF;
-                
+
                 current_tx_packet->packed_data[byte_fill_count++] =
                     sample1 & 0xFF;
                 current_tx_packet->packed_data[byte_fill_count++] =
@@ -102,9 +104,8 @@ static void saadc_event_handler(nrfx_saadc_evt_t const* p_event) {
                     (sample2 >> 4) & 0xFF;
 
                 global_sample_counter++;
-                
-                if (byte_fill_count >= PACKED_BUFFER_SIZE) {
 
+                if (byte_fill_count >= PACKED_BUFFER_SIZE) {
                     k_fifo_put(&ble_pointer_fifo, current_tx_packet);
                     current_tx_packet = NULL;
                     byte_fill_count = 0;
@@ -131,9 +132,9 @@ void configure_saadc(void) {
     }
 
     channels[0].channel_config.gain = NRF_SAADC_GAIN1_4;
-    channels[0].channel_config.acq_time = NRF_SAADC_ACQTIME_MAX;
+    channels[0].channel_config.acq_time = NRF54_SAADC_ACQTIME_US(10);
     channels[1].channel_config.gain = NRF_SAADC_GAIN1_4;
-    channels[1].channel_config.acq_time = NRF_SAADC_ACQTIME_MAX;
+    channels[1].channel_config.acq_time = NRF54_SAADC_ACQTIME_US(10);
 
     err = nrfx_saadc_channels_config(channels, 2);
     if (err != 0) {
