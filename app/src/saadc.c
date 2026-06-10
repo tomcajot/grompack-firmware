@@ -149,22 +149,4 @@ void configure_saadc(void) {
         LOG_ERR("nrfx_saadc_advanced_mode_set error: %08x", err);
         return;
     }
-
-    err = nrfx_saadc_buffer_set(saadc_sample_buffer[0], SAADC_BUFFER_SIZE);
-    if (err != 0) {
-        LOG_ERR("nrfx_saadc_buffer_set error: %08x", err);
-        return;
-    }
-
-    err = nrfx_saadc_buffer_set(saadc_sample_buffer[1], SAADC_BUFFER_SIZE);
-    if (err != 0) {
-        LOG_ERR("nrfx_saadc_buffer_set error: %08x", err);
-        return;
-    }
-
-    err = nrfx_saadc_mode_trigger();
-    if (err != 0) {
-        LOG_ERR("nrfx_saadc_mode_trigger error: %08x", err);
-        return;
-    }
 }
