@@ -91,23 +91,18 @@ static void saadc_event_handler(nrfx_saadc_evt_t const* p_event) {
 
             int16_t* raw_data = (int16_t*)(p_event->data.done.p_buffer);
 
-            for (int i = 0; i < (SAADC_BUFFER_SIZE / 2); i += 2) {
-                uint16_t s0 = (uint16_t)raw_data[i * 2] & 0x3FF;
-                uint16_t s1 = (uint16_t)raw_data[i * 2 + 1] & 0x3FF;
-                uint16_t s2 = (uint16_t)raw_data[(i + 1) * 2] & 0x3FF;
-                uint16_t s3 = (uint16_t)raw_data[(i + 1) * 2 + 1] & 0x3FF;
+            for (int i = 0; i < (SAADC_BUFFER_SIZE / 2); i++) {
+                uint16_t sample1 = (uint16_t)raw_data[i * 2] & 0x0FFF;
+                uint16_t sample2 = (uint16_t)raw_data[i * 2 + 1] & 0x0FFF;
 
-                current_tx_packet->packed_data[byte_fill_count++] = s0 & 0xFF;
                 current_tx_packet->packed_data[byte_fill_count++] =
-                    ((s0 >> 8) & 0x03) | ((s1 << 2) & 0xFC);
+                    sample1 & 0xFF;
                 current_tx_packet->packed_data[byte_fill_count++] =
-                    ((s1 >> 6) & 0x0F) | ((s2 << 4) & 0xF0);
+                    ((sample1 >> 8) & 0x0F) | ((sample2 << 4) & 0xF0);
                 current_tx_packet->packed_data[byte_fill_count++] =
-                    ((s2 >> 4) & 0x3F) | ((s3 << 6) & 0xC0);
-                current_tx_packet->packed_data[byte_fill_count++] =
-                    (s3 >> 2) & 0xFF;
+                    (sample2 >> 4) & 0xFF;
 
-                global_sample_counter += 2;
+                global_sample_counter++;
 
                 if (byte_fill_count >= PACKED_BUFFER_SIZE) {
                     k_fifo_put(&ble_pointer_fifo, current_tx_packet);
@@ -135,9 +130,9 @@ void configure_saadc(void) {
         return;
     }
 
-    channels[0].channel_config.gain = NRF_SAADC_GAIN1_2;
+    channels[0].channel_config.gain = NRF_SAADC_GAIN1;
     channels[0].channel_config.acq_time = NRF54_SAADC_ACQTIME_US(20);
-    channels[1].channel_config.gain = NRF_SAADC_GAIN1_2;
+    channels[1].channel_config.gain = NRF_SAADC_GAIN1;
     channels[1].channel_config.acq_time = NRF54_SAADC_ACQTIME_US(20);
 
     err = nrfx_saadc_channels_config(channels, 2);
@@ -151,7 +146,7 @@ void configure_saadc(void) {
     saadc_adv_config.burst = NRF_SAADC_BURST_ENABLED;
 
     err = nrfx_saadc_advanced_mode_set(BIT(0) | BIT(1),
-                                       NRF_SAADC_RESOLUTION_10BIT,
+                                       NRF_SAADC_RESOLUTION_12BIT,
                                        &saadc_adv_config, saadc_event_handler);
 
     if (err != 0) {
