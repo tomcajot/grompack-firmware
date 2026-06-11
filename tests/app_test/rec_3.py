@@ -12,7 +12,6 @@ import struct
 import threading
 from collections import deque
 from datetime import datetime
-
 import numpy as np
 import pyqtgraph as pg
 from pyqtgraph.Qt import QtCore, QtWidgets
