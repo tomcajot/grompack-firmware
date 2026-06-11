@@ -1,4 +1,6 @@
 #include <zephyr/bluetooth/bluetooth.h>
+#include <zephyr/bluetooth/hci.h>
+#include <zephyr/bluetooth/hci_vs.h>
 #include <zephyr/bluetooth/services/nus.h>
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
@@ -67,6 +69,36 @@ struct bt_nus_cb nus_listener = {
     .received = received,
 };
 
+static void set_tx_power(uint8_t handle_type, uint16_t handle, int8_t dbm) {
+    struct bt_hci_cp_vs_write_tx_power_level* cp;
+    struct net_buf *buf, *rsp = NULL;
+    int err;
+
+    buf = bt_hci_cmd_alloc(K_FOREVER);
+
+    if (!buf) {
+        LOG_ERR("Failed to create HCI cmd buffer");
+        return;
+    }
+
+    cp = net_buf_add(buf, sizeof(*cp));
+    cp->handle_type = handle_type;
+    cp->handle = handle;
+    cp->tx_power_level = dbm;
+
+    err = bt_hci_cmd_send_sync(BT_HCI_OP_VS_WRITE_TX_POWER_LEVEL, buf, &rsp);
+
+    if (err) {
+        LOG_ERR("TX power set failed (err %d)", err);
+    } else {
+        LOG_INF("TX power set to %d dBm (handle_type=%d)", dbm, handle_type);
+    }
+
+    if (rsp) {
+        net_buf_unref(rsp);
+    }
+}
+
 void configure_ble(void) {
     int err;
 
@@ -77,6 +109,8 @@ void configure_ble(void) {
         LOG_ERR("BLE init failed (err %d)", err);
         return;
     }
+
+    set_tx_power(BT_HCI_VS_LL_HANDLE_TYPE_ADV, 0, -20);
 
     err = bt_nus_cb_register(&nus_listener, NULL);
     if (err) {
@@ -101,6 +135,15 @@ static void on_connected(struct bt_conn* conn, uint8_t err) {
         return;
     }
     LOG_INF("Connected! 0x%02x", err);
+
+    uint16_t hci_handle;
+    int hci_err = bt_hci_get_conn_handle(conn, &hci_handle);
+
+    if (hci_err == 0) {
+        set_tx_power(BT_HCI_VS_LL_HANDLE_TYPE_CONN, hci_handle, -20);
+    } else {
+        LOG_WRN("Failed to get HCI handle for TX power adjustment");
+    }
 
     bt_conn_le_data_len_update(conn, BT_LE_DATA_LEN_PARAM_MAX);
     bt_conn_le_phy_update(conn, BT_CONN_LE_PHY_PARAM_2M);

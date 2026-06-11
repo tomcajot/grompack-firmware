@@ -11,8 +11,10 @@ static uint16_t byte_fill_count = 0;
 static uint32_t global_sample_counter = 0;
 
 static nrfx_saadc_channel_t channels[2] = {
-    NRFX_SAADC_DEFAULT_CHANNEL_SE(SAADC_INPUT_PIN_0, 0),
-    NRFX_SAADC_DEFAULT_CHANNEL_SE(SAADC_INPUT_PIN_1, 1)};
+    NRFX_SAADC_DEFAULT_CHANNEL_DIFFERENTIAL(SAADC_INPUT_PIN_0,
+                                            SAADC_INPUT_PIN_REF, 0),
+    NRFX_SAADC_DEFAULT_CHANNEL_DIFFERENTIAL(SAADC_INPUT_PIN_1,
+                                            SAADC_INPUT_PIN_REF, 1)};
 
 static int16_t saadc_sample_buffer[2][SAADC_BUFFER_SIZE];
 
@@ -91,18 +93,23 @@ static void saadc_event_handler(nrfx_saadc_evt_t const* p_event) {
 
             int16_t* raw_data = (int16_t*)(p_event->data.done.p_buffer);
 
-            for (int i = 0; i < (SAADC_BUFFER_SIZE / 2); i++) {
-                uint16_t sample1 = (uint16_t)raw_data[i * 2] & 0x0FFF;
-                uint16_t sample2 = (uint16_t)raw_data[(i * 2) + 1] & 0x0FFF;
+            for (int i = 0; i < (SAADC_BUFFER_SIZE / 2); i += 2) {
+                uint16_t s0 = (uint16_t)raw_data[i * 2] & 0x3FF;
+                uint16_t s1 = (uint16_t)raw_data[i * 2 + 1] & 0x3FF;
+                uint16_t s2 = (uint16_t)raw_data[(i + 1) * 2] & 0x3FF;
+                uint16_t s3 = (uint16_t)raw_data[(i + 1) * 2 + 1] & 0x3FF;
 
+                current_tx_packet->packed_data[byte_fill_count++] = s0 & 0xFF;
                 current_tx_packet->packed_data[byte_fill_count++] =
-                    sample1 & 0xFF;
+                    ((s0 >> 8) & 0x03) | ((s1 << 2) & 0xFC);
                 current_tx_packet->packed_data[byte_fill_count++] =
-                    ((sample1 >> 8) & 0x0F) | ((sample2 << 4) & 0xF0);
+                    ((s1 >> 6) & 0x0F) | ((s2 << 4) & 0xF0);
                 current_tx_packet->packed_data[byte_fill_count++] =
-                    (sample2 >> 4) & 0xFF;
+                    ((s2 >> 4) & 0x3F) | ((s3 << 6) & 0xC0);
+                current_tx_packet->packed_data[byte_fill_count++] =
+                    (s3 >> 2) & 0xFF;
 
-                global_sample_counter++;
+                global_sample_counter += 2;
 
                 if (byte_fill_count >= PACKED_BUFFER_SIZE) {
                     k_fifo_put(&ble_pointer_fifo, current_tx_packet);
@@ -142,9 +149,13 @@ void configure_saadc(void) {
     }
 
     nrfx_saadc_adv_config_t saadc_adv_config = NRFX_SAADC_DEFAULT_ADV_CONFIG;
+    saadc_adv_config.oversampling = NRF_SAADC_OVERSAMPLE_4X;
+    saadc_adv_config.burst = NRF_SAADC_BURST_ENABLED;
+
     err = nrfx_saadc_advanced_mode_set(BIT(0) | BIT(1),
-                                       NRF_SAADC_RESOLUTION_12BIT,
+                                       NRF_SAADC_RESOLUTION_10BIT,
                                        &saadc_adv_config, saadc_event_handler);
+
     if (err != 0) {
         LOG_ERR("nrfx_saadc_advanced_mode_set error: %08x", err);
         return;

@@ -26,23 +26,15 @@ int main(void) {
         tx_packet = k_fifo_get(&ble_pointer_fifo, K_FOREVER);
 
         if (is_laptop_subscribed) {
-            bool packet_sent = false;
+            err = bt_nus_send(NULL, (uint8_t*)&tx_packet->sample_index,
+                              sizeof(uint32_t) + PACKED_BUFFER_SIZE);
 
-            while (!packet_sent && is_laptop_subscribed) {
-                err = bt_nus_send(NULL, (uint8_t*)&tx_packet->sample_index,
-                                  sizeof(uint32_t) + PACKED_BUFFER_SIZE);
-
-                if (err == 0) {
-                    packet_sent = true;
-                } else if (err == -ENOMEM) {
-                    k_yield();
-                } else if (err != -EAGAIN) {
-                    LOG_ERR("Transmission fatal error: %d", err);
-                    break;
-                }
+            if (err == -ENOMEM) {
+                LOG_WRN("TX queue full, dropping packet (sample %u)",
+                        tx_packet->sample_index);
+            } else if (err != 0 && err != -EAGAIN) {
+                LOG_ERR("bt_nus_send fatal error: %d", err);
             }
-        } else {
-            LOG_INF("Laptop not subscribed, skipping transmission.");
         }
 
         k_mem_slab_free(&ble_payload_slab, (void*)tx_packet);
