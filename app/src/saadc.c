@@ -52,6 +52,7 @@ void start_hardware_pipeline(void) {
 
     global_sample_counter = 0;
     saadc_current_buffer = 0;
+    byte_fill_count = 0;
 
     nrfx_saadc_buffer_set(saadc_sample_buffer[0], SAADC_BUFFER_SIZE);
     nrfx_saadc_buffer_set(saadc_sample_buffer[1], SAADC_BUFFER_SIZE);
@@ -76,7 +77,6 @@ static void saadc_event_handler(nrfx_saadc_evt_t const* p_event) {
                 return;
             }
             break;
-
         case NRFX_SAADC_EVT_DONE: {
             if (current_tx_packet == NULL) {
                 if (k_mem_slab_alloc(&ble_payload_slab,
@@ -131,9 +131,9 @@ void configure_saadc(void) {
     }
 
     channels[0].channel_config.gain = NRF_SAADC_GAIN1;
-    channels[0].channel_config.acq_time = NRF54_SAADC_ACQTIME_US(20);
+    channels[0].channel_config.acq_time = NRF54_SAADC_ACQTIME_US(3);
     channels[1].channel_config.gain = NRF_SAADC_GAIN1;
-    channels[1].channel_config.acq_time = NRF54_SAADC_ACQTIME_US(20);
+    channels[1].channel_config.acq_time = NRF54_SAADC_ACQTIME_US(3);
 
     err = nrfx_saadc_channels_config(channels, 2);
     if (err != 0) {

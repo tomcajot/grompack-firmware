@@ -3,7 +3,7 @@ import plotly.graph_objects as go
 from scipy.io import wavfile
 
 # Define the path to your 10s wav file
-file_path = "10sNN.wav"
+file_path = "rec_ch2_20260612_184049.wav"
 
 # 1. Read the audio data
 sample_rate, data = wavfile.read(file_path)
